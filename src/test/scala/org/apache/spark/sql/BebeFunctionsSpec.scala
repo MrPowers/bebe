@@ -12,17 +12,18 @@ class BebeFunctionsSpec extends FunSpec with SparkSessionTestWrapper with Column
 
   import spark.implicits._
 
-  describe("regexp_extract_all") {
-    it("extracts multiple results") {
-      val df = Seq(
-        ("this 23 has 44 numbers", Array("23", "44")),
-        ("no numbers", Array.empty[String]),
-        (null, null)
-      ).toDF("some_string", "expected")
-        .withColumn("actual", bebe_regexp_extract_all(col("some_string"), lit("(\\d+)"), lit(1)))
-      assertColumnEquality(df, "actual", "expected")
-    }
-  }
+  // @ todo add back in when project is upgraded to Spark 3.1.0
+//  describe("regexp_extract_all") {
+//    it("extracts multiple results") {
+//      val df = Seq(
+//        ("this 23 has 44 numbers", Array("23", "44")),
+//        ("no numbers", Array.empty[String]),
+//        (null, null)
+//      ).toDF("some_string", "expected")
+//        .withColumn("actual", bebe_regexp_extract_all(col("some_string"), lit("(\\d+)"), lit(1)))
+//      assertColumnEquality(df, "actual", "expected")
+//    }
+//  }
 
   describe("beginning_of_month") {
 //    it("has a good blog post example") {

@@ -48,16 +48,16 @@ object BebeFunctions {
       new ApproximatePercentile(column.expr, percentage.expr)
     }
 
-  /**
-    * Extract all strings in the `str` that match the `regexp` expression
-    * and corresponding to the regex group index.
-    * @group string_funcs
-    * @since 0.0.1
-    */
-  def bebe_regexp_extract_all(col: Column, regex: Column, groupIndex: Column): Column =
-    withExpr {
-      RegExpExtractAll(col.expr, regex.expr, groupIndex.expr)
-    }
+  // @todo Add back in when project is upgraded to Spark 3.1
+//  /**
+//   * Extract all strings in the `str` that match the `regexp` expression
+//   * and corresponding to the regex group index.
+//   * @group string_funcs
+//   * @since 0.0.1
+//   */
+//  def bebe_regexp_extract_all(col: Column, regex: Column, groupIndex: Column): Column = withExpr {
+//    RegExpExtractAll(col.expr, regex.expr, groupIndex.expr)
+//  }
 
   def bebe_beginning_of_month(col: Column): Column =
     withExpr {
