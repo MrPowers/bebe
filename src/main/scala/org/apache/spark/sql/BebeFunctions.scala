@@ -16,6 +16,8 @@ object BebeFunctions {
     Column(func.toAggregateExpression(isDistinct))
   }
 
+  // FUNCTIONS MISSING IN SCALA API
+
   /**
     * Returns the approximate percentile value of numeric
     * column `col` at the given percentage. The value of percentage must be between 0.0
@@ -69,6 +71,11 @@ object BebeFunctions {
     withExpr {
       RegExpExtractAll(col.expr, regex.expr, groupIndex.expr)
     }
+
+  def bebe_stack(n: Column, exprs: Column*): Column =
+    new Column(Stack(n.expr +: exprs.map(_.expr)))
+
+  // ADDITIONAL UTILITY FUNCTIONS
 
   def bebe_beginning_of_month(col: Column): Column =
     withExpr {

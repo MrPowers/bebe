@@ -3,16 +3,22 @@ package org.apache.spark.sql
 import org.scalatest.FunSpec
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.BebeFunctions._
-import com.github.mrpowers.spark.fast.tests.ColumnComparer
+import com.github.mrpowers.spark.fast.tests.{ColumnComparer, DataFrameComparer}
 import mrpowers.bebe.SparkSessionTestWrapper
-import mrpowers.bebe.Extensions._
 import java.sql.{Date, Timestamp}
 
-class BebeFunctionsSpec extends FunSpec with SparkSessionTestWrapper with ColumnComparer {
+import com.github.mrpowers.spark.daria.sql.SparkSessionExt._
+import org.apache.spark.sql.types._
+
+class BebeFunctionsSpec
+    extends FunSpec
+    with SparkSessionTestWrapper
+    with ColumnComparer
+    with DataFrameComparer {
 
   import spark.implicits._
 
-  describe("regexp_extract_all") {
+  describe("bebe_regexp_extract_all") {
     it("extracts multiple results") {
       val df = Seq(
         ("this 23 has 44 numbers", Array("23", "44")),
@@ -43,6 +49,38 @@ class BebeFunctionsSpec extends FunSpec with SparkSessionTestWrapper with Column
       ).toDF("some_kv_pairs", "expected")
         .withColumn("actual", bebe_cardinality(col("some_kv_pairs")))
       assertColumnEquality(df, "actual", "expected")
+    }
+  }
+
+  describe("bebe_stack") {
+    it("stacks stuff") {
+      val df = spark
+        .createDF(
+          List(
+            (1, 2, 3, 4),
+            (6, 7, 8, 9)
+          ),
+          List(
+            ("col1", IntegerType, true),
+            ("col2", IntegerType, true),
+            ("col3", IntegerType, true),
+            ("col4", IntegerType, true)
+          )
+        )
+        .select(bebe_stack(lit(2), col("col1"), col("col2"), col("col3"), col("col4")))
+      val expectedDF = spark.createDF(
+        List(
+          (1, 2),
+          (3, 4),
+          (6, 7),
+          (8, 9)
+        ),
+        List(
+          ("col0", IntegerType, true),
+          ("col1", IntegerType, true)
+        )
+      )
+      assertSmallDataFrameEquality(df, expectedDF)
     }
   }
 
