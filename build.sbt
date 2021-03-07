@@ -4,8 +4,17 @@ name := "bebe"
 version := "0.0.1"
 
 scalaVersion := "2.12.12"
+val sparkVersion = settingKey[String]("Spark version")
 
-libraryDependencies += "org.apache.spark" %% "spark-sql" % "3.1.1" % "provided"
+sparkVersion := "3.1.1"
+
+Compile / unmanagedSourceDirectories ++= {
+  if (sparkVersion.value < "3.1.0") {
+    List(sourceDirectory.value / "main" / "scala_spark_prev_3.1.0")
+  } else List()
+}
+
+libraryDependencies += "org.apache.spark" %% "spark-sql" % sparkVersion.value % "provided"
 
 libraryDependencies += "com.github.mrpowers" %% "spark-daria"      % "0.38.2" % "test"
 libraryDependencies += "com.github.mrpowers" %% "spark-fast-tests" % "0.23.0" % "test"
