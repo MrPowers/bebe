@@ -71,7 +71,10 @@ class BebeFunctionsSpec extends FunSpec with SparkSessionTestWrapper with Column
       val df = Seq(
         ("100-200, 300-400", List("100", "300"))
       ).toDF("some_str", "expected")
-        .withColumn("actual", bebe_regexp_extract_all(col("some_str"), lit("(\\d+)-(\\d+)"), lit(1)))
+        .withColumn(
+          "actual",
+          bebe_regexp_extract_all(col("some_str"), lit("(\\d+)-(\\d+)"), lit(1))
+        )
       assertColumnEquality(df, "actual", "expected")
     }
   }
