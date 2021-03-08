@@ -14,8 +14,9 @@ jobs:
       - uses: olafurpg/setup-scala@v10
       - name: Coursier cache
         uses: coursier/cache-action@v5
+        continue-on-error: true
       - name: Test
-        run: sbt ++${{ matrix.scala }} test -DsparkVersion=${{ matrix.spark  }}
+        run: sbt ++${{ matrix.scala }} test -DsparkVersion=${{ matrix.spark }}
       - name: Code Quality
         run: sbt scalafmtCheckAll
       - name: Cleaning for cache
