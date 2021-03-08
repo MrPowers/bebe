@@ -82,7 +82,6 @@ abstract class RegExpExtractBase
       > SELECT _FUNC_('100-200, 300-400', '(\\d+)-(\\d+)', 1);
        ["100","300"]
   """,
-  since = "3.1.0",
   group = "string_funcs")
 case class RegExpExtractAll(subject: Expression, regexp: Expression, idx: Expression)
   extends RegExpExtractBase {

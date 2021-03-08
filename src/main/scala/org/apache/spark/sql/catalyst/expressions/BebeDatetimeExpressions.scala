@@ -15,8 +15,7 @@ import org.apache.spark.unsafe.types.UTF8String
       > SELECT _FUNC_('2009-01-12');
        2009-01-01
   """,
-  group = "datetime_funcs",
-  since = "3.1.0"
+  group = "datetime_funcs"
 )
 case class BeginningOfMonth(startDate: Expression)
     extends UnaryExpression
