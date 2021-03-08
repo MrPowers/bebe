@@ -167,6 +167,25 @@ class BebeFunctionsSpec
     }
   }
 
+  describe("bebe_chr") {
+    it("returns the ASCII character of a character") {
+      val df = spark
+        .createDF(
+          List(
+            (118, "v"),
+            (65, "A"),
+            (null, null)
+          ),
+          List(
+            ("some_int", IntegerType, true),
+            ("expected", StringType, true)
+          )
+        )
+        .withColumn("actual", bebe_chr(col("some_int")))
+      assertColumnEquality(df, "actual", "expected")
+    }
+  }
+
   describe("beginning_of_month") {
 //    it("has a good blog post example") {
 //      val df = Seq(
