@@ -182,6 +182,16 @@ class BebeFunctionsSpec
           )
         )
         .withColumn("actual", bebe_chr(col("some_int")))
+    }
+  }
+
+  describe("bebe_is_not_null") {
+    it("returns true if the element isn't null") {
+      val df = Seq(
+        (null, false),
+        ("hi", true)
+      ).toDF("some_string", "expected")
+        .withColumn("actual", bebe_is_not_null(col("some_string")))
       assertColumnEquality(df, "actual", "expected")
     }
   }

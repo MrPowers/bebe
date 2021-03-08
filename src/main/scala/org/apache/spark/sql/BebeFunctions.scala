@@ -63,6 +63,7 @@ object BebeFunctions {
   def bebe_cardinality(e: Column): Column = withExpr { Size(e.expr) }
 
   /**
+    * <<<<<<< HEAD
     * Returns the cotangent of `expr`, as if computed by `java.lang.Math.cot`.
     *
     * @param expr the column of which to compute the cotangent
@@ -97,6 +98,11 @@ object BebeFunctions {
     * @group string_funcs
     */
   def bebe_chr(col: Column): Column = withExpr { Chr(col.expr) }
+
+  /**
+    * True if the current expression is NOT null.
+    */
+  def bebe_is_not_null(col: Column): Column = withExpr { IsNotNull(col.expr) }
 
   /**
     * Extract all strings in the `str` that match the `regexp` expression
