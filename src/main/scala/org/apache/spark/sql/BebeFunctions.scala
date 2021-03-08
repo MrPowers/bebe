@@ -63,6 +63,7 @@ object BebeFunctions {
   def bebe_cardinality(e: Column): Column = withExpr { Size(e.expr) }
 
   /**
+    * <<<<<<< HEAD
     * Returns the cotangent of `expr`, as if computed by `java.lang.Math.cot`.
     *
     * @param expr the column of which to compute the cotangent
@@ -78,6 +79,15 @@ object BebeFunctions {
     */
   def bebe_count_if(e: Column): Column = withAggregateFunction {
     CountIf(e.expr)
+  }
+
+  /**
+    * Returns the number of characters
+    *
+    * @group string_funcs
+    */
+  def bebe_character_length(col: Column) = withExpr {
+    Length(col.expr)
   }
 
   /**

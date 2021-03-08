@@ -2,11 +2,11 @@ package org.apache.spark.sql
 
 import org.scalatest.FunSpec
 import org.apache.spark.sql.functions._
+import org.apache.spark.sql.types._
 import org.apache.spark.sql.BebeFunctions._
 import com.github.mrpowers.spark.fast.tests.{ColumnComparer, DataFrameComparer}
 import mrpowers.bebe.SparkSessionTestWrapper
 import java.sql.{Date, Timestamp}
-
 import com.github.mrpowers.spark.daria.sql.SparkSessionExt._
 import org.apache.spark.sql.types._
 
@@ -127,6 +127,43 @@ class BebeFunctionsSpec
         )
       )
       assertSmallDataFrameEquality(df, expectedDF)
+    }
+  }
+
+  describe("bebe_character_length") {
+    it("returns the number of characters in a string") {
+      val df = spark
+        .createDF(
+          List(
+            ("Spark SQL ", 10),
+            ("", 0),
+            (null, null)
+          ),
+          List(
+            ("some_string", StringType, true),
+            ("expected", IntegerType, true)
+          )
+        )
+        .withColumn("actual", bebe_character_length(col("some_string")))
+      assertColumnEquality(df, "actual", "expected")
+    }
+
+    it("errors out when run on a column type that doesn't make sense") {
+      val df = spark
+        .createDF(
+          List(
+            (33),
+            (44),
+            (null)
+          ),
+          List(
+            ("some_int", IntegerType, true)
+          )
+        )
+        .withColumn("actual", bebe_character_length(col("some_int")))
+      intercept[org.apache.spark.sql.AnalysisException] {
+        assertColumnEquality(df, "actual", "expected")
+      }
     }
   }
 
