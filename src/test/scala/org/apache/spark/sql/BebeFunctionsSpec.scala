@@ -71,6 +71,33 @@ class BebeFunctionsSpec
     }
   }
 
+  describe("bebe_count_if") {
+    it("returns the count if the predicate is true") {
+      val actualDF = spark
+        .createDF(
+          List(
+            (4),
+            (3),
+            (10)
+          ),
+          List(
+            ("some_int", IntegerType, true)
+          )
+        )
+        .agg(bebe_count_if(col("some_int") < 5).as("lt_five_count"))
+      val expectedDF = spark
+        .createDF(
+          List(
+            (2L)
+          ),
+          List(
+            ("lt_five_count", LongType, true)
+          )
+        )
+      assertSmallDataFrameEquality(actualDF, expectedDF, ignoreNullable = true)
+    }
+  }
+
   describe("bebe_stack") {
     it("stacks stuff") {
       val df = spark

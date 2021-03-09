@@ -70,12 +70,12 @@ object BebeFunctions {
   def bebe_cot(expr: Column): Column = withExpr(Cot(expr.expr))
 
   /**
-   * Returns the number of `TRUE` values for the expression.
-   *
-   * @group agg_funcs
-   *
-   * @param e the expression to conditionally count
-   */
+    * Returns the number of `TRUE` values for the expression.
+    *
+    * @group agg_funcs
+    *
+    * @param e the expression to conditionally count
+    */
   def bebe_count_if(e: Column): Column = withAggregateFunction {
     CountIf(e.expr)
   }
