@@ -52,6 +52,25 @@ class BebeFunctionsSpec
     }
   }
 
+  describe("bebe_cot") {
+    it("returns the cotangent") {
+      val df = spark
+        .createDF(
+          List(
+            (60, 3.12),
+            (100, -1.7),
+            (null, null)
+          ),
+          List(
+            ("some_degree", IntegerType, true),
+            ("expected", DoubleType, true)
+          )
+        )
+        .withColumn("actual", bebe_cot(col("some_degree")))
+      assertDoubleTypeColumnEquality(df, "actual", "expected", 0.01)
+    }
+  }
+
   describe("bebe_stack") {
     it("stacks stuff") {
       val df = spark
