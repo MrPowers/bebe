@@ -6,6 +6,7 @@ import org.apache.spark.sql.catalyst.expressions.aggregate._
 /**
   * @groupname string_funcs String Functions
   * @groupname agg_funcs Aggregate Functions
+  * @groupname math_funcs Math Functions
   */
 object BebeFunctions {
   private def withExpr(expr: Expression): Column = Column(expr)
@@ -60,6 +61,13 @@ object BebeFunctions {
     * @group collection_funcs
     */
   def bebe_cardinality(e: Column): Column = withExpr { Size(e.expr) }
+
+  /**
+   * Returns the cotangent of `expr`, as if computed by `java.lang.Math.cot`.
+   *
+   * @param expr the column of which to compute the cotangent
+   */
+  def bebe_cot(expr: Column): Column = withExpr(Cot(expr.expr))
 
   /**
     * Extract all strings in the `str` that match the `regexp` expression
