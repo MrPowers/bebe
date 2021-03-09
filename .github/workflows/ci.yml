@@ -7,15 +7,16 @@ jobs:
       fail-fast: false
       matrix:
         scala: ["2.12.12"]
-        spark: ["3.0.1"]
+        spark: ["3.0.2", "3.1.1"]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: olafurpg/setup-scala@v10
       - name: Coursier cache
         uses: coursier/cache-action@v5
+        continue-on-error: true
       - name: Test
-        run: sbt -Dspark.testVersion=${{ matrix.spark  }} ++${{ matrix.scala }} test
+        run: sbt ++${{ matrix.scala }} test -DsparkVersion=${{ matrix.spark }}
       - name: Code Quality
         run: sbt scalafmtCheckAll
       - name: Cleaning for cache

@@ -172,6 +172,17 @@ class BebeFunctionsSpec
         .withColumn("actual", bebe_beginning_of_month(col("some_time")))
       assertColumnEquality(df, "actual", "expected")
     }
+
+    it("get regex extract all") {
+      val df = Seq(
+        ("100-200, 300-400", List("100", "300"))
+      ).toDF("some_str", "expected")
+        .withColumn(
+          "actual",
+          bebe_regexp_extract_all(col("some_str"), lit("(\\d+)-(\\d+)"), lit(1))
+        )
+      assertColumnEquality(df, "actual", "expected")
+    }
   }
 
 }
