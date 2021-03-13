@@ -4,7 +4,8 @@ import org.apache.spark.sql.catalyst.expressions.codegen.{CodegenContext, ExprCo
 import org.apache.spark.sql.types.{AbstractDataType, CalendarIntervalType, DataType, TimestampType}
 
 case class Age(end: Expression, start: Expression)
-  extends BinaryExpression with ImplicitCastInputTypes {
+    extends BinaryExpression
+    with ImplicitCastInputTypes {
   override def left: Expression = end
 
   override def right: Expression = start
