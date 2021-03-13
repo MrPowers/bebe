@@ -96,6 +96,11 @@ object BebeFunctions {
 
   // ADDITIONAL UTILITY FUNCTIONS
 
+  def bebe_age(col1: Column, col2: Column): Column =
+    withExpr {
+      Age(col1.expr, col2.expr)
+    }
+
   def bebe_beginning_of_month(col: Column): Column =
     withExpr {
       BeginningOfMonth(col.expr)
