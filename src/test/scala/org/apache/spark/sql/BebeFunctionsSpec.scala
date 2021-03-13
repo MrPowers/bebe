@@ -9,6 +9,7 @@ import java.sql.{Date, Timestamp}
 
 import com.github.mrpowers.spark.daria.sql.SparkSessionExt._
 import org.apache.spark.sql.types._
+import org.apache.spark.unsafe.types.CalendarInterval
 
 class BebeFunctionsSpec
     extends FunSpec
@@ -127,6 +128,18 @@ class BebeFunctionsSpec
         )
       )
       assertSmallDataFrameEquality(df, expectedDF)
+    }
+  }
+
+  describe("bebe_age") {
+    it("calculates the age given a startDate and an endDate") {
+      val df = Seq(
+        (Date.valueOf("2020-01-15"), Date.valueOf("2020-01-01"), new CalendarInterval(0, 14, 0)),
+        (Date.valueOf("2020-01-20"), Date.valueOf("2020-01-01"), new CalendarInterval(0, 19, 0)),
+        (null, null, null)
+      ).toDF("some_date", "another_date", "expected")
+        .withColumn("actual", bebe_age(col("some_date"), col("another_date")))
+      assertColumnEquality(df, "actual", "expected")
     }
   }
 
