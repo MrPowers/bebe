@@ -173,6 +173,24 @@ class BebeFunctionsSpec
     }
   }
 
+  describe("bebe_e") {
+    it("returns Euler's number") {
+      val df = spark
+        .createDF(
+          List(
+            (118, 2.718),
+            (null, 2.718)
+          ),
+          List(
+            ("some_int", IntegerType, true),
+            ("expected", DoubleType, true)
+          )
+        )
+        .withColumn("actual", bebe_e())
+      assertDoubleTypeColumnEquality(df, "actual", "expected", 0.001)
+    }
+  }
+
   describe("bebe_is_not_null") {
     it("returns true if the element isn't null") {
       val df = Seq(
