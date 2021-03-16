@@ -112,6 +112,13 @@ object BebeFunctions {
   }
 
   /**
+   * inline(expr) - Explodes an array of structs into a table. Uses column names col1, col2, etc. by default unless specified otherwise.
+   */
+  def bebe_inline(col: Column): Column = withExpr {
+    Inline(col.expr)
+  }
+
+  /**
     * True if the current expression is NOT null.
     */
   def bebe_is_not_null(col: Column): Column = withExpr { IsNotNull(col.expr) }

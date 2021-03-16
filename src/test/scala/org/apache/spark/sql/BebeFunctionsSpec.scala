@@ -211,6 +211,52 @@ class BebeFunctionsSpec
     }
   }
 
+  describe("bebe_inline") {
+    it("explodes an array of StructTypes to a table") {
+      val data = Seq(
+        Row(20.0, "dog"),
+        Row(3.5, "cat"),
+        Row(0.000006, "ant")
+      )
+
+      val schema = StructType(
+        List(
+          StructField("weight", DoubleType, true),
+          StructField("animal_type", StringType, true)
+        )
+      )
+
+      val df = spark.createDataFrame(
+        spark.sparkContext.parallelize(data),
+        schema
+      )
+
+      val actualDF = df.withColumn(
+        "animal_interpretation",
+        struct(
+          (col("weight") > 5).as("is_large_animal"),
+          col("animal_type").isin("rat", "cat", "dog").as("is_mammal")
+        )
+      ).groupBy("animal_interpretation")
+        .agg(collect_list("animal_interpretation").as("interpretations"))
+
+      val res = actualDF.select(bebe_inline(col("interpretations")))
+
+      val expected = spark.createDF(
+        List(
+          (true, true),
+          (false, false),
+          (false, true)
+        ), List(
+          ("is_large_animal", BooleanType, true),
+          ("is_mammal", BooleanType, true)
+        )
+      )
+
+      assertSmallDataFrameEquality(res, expected)
+    }
+  }
+
   describe("bebe_is_not_null") {
     it("returns true if the element isn't null") {
       val df = Seq(
