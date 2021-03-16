@@ -130,6 +130,13 @@ object BebeFunctions {
     Left(col.expr, len.expr, Substring(col.expr, Literal(1), len.expr))
   }
 
+  /**
+   * str like pattern[ ESCAPE escape] - Returns true if str matches pattern with escape, null if any arguments are null, false otherwise.
+   */
+  def bebe_like(col: Column, sqlLike: Column): Column = withExpr {
+    Like(col.expr, sqlLike.expr, '\\')
+  }
+
   def bebe_stack(n: Column, exprs: Column*): Column =
     new Column(Stack(n.expr +: exprs.map(_.expr)))
 
