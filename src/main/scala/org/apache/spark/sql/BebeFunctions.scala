@@ -123,6 +123,13 @@ object BebeFunctions {
     */
   def bebe_is_not_null(col: Column): Column = withExpr { IsNotNull(col.expr) }
 
+  /**
+   * left(str, len) - Returns the leftmost len(len can be string type) characters from the string str, if len is less or equal than 0 the result is an empty string.
+   */
+  def bebe_left(col: Column, len: Column): Column = withExpr {
+    Left(col.expr, len.expr, Substring(col.expr, Literal(1), len.expr))
+  }
+
   def bebe_stack(n: Column, exprs: Column*): Column =
     new Column(Stack(n.expr +: exprs.map(_.expr)))
 

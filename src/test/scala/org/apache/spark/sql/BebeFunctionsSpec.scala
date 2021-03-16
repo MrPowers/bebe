@@ -268,6 +268,20 @@ class BebeFunctionsSpec
     }
   }
 
+  describe("bebe_left") {
+    it("gets the leftmost N elements from a string") {
+      val df = Seq(
+        ("this 23 has 44 numbers", "th"),
+        ("no numbers", "no"),
+        (null, null)
+      ).toDF("some_string", "expected")
+        .withColumn("actual", bebe_left(col("some_string"), lit(2)))
+      assertColumnEquality(df, "actual", "expected")
+    }
+  }
+
+  // ADDITIONAL HELPER FUNCTIONS
+
   describe("beginning_of_month") {
 //    it("has a good blog post example") {
 //      val df = Seq(
