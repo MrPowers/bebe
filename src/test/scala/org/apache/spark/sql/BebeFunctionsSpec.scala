@@ -359,6 +359,28 @@ class BebeFunctionsSpec
     }
   }
 
+  describe("bebe_nvl2") {
+    it("Returns expr2 if expr1 is not null, or expr3 otherwise") {
+      val df = spark
+        .createDF(
+          List(
+            (null, "expr2", "expr3", "expr3"),
+            ("expr1", null, "expr3", null),
+            ("expr1", "expr2", "expr3", "expr2"),
+            ("expr1", null, null, null)
+          ),
+          List(
+            ("col1", StringType, true),
+            ("col2", StringType, true),
+            ("col3", StringType, true),
+            ("expected", StringType, true)
+          )
+        )
+        .withColumn("actual", bebe_nvl2(col("col1"), col("col2"), col("col3")))
+      assertColumnEquality(df, "actual", "expected")
+    }
+  }
+
   // ADDITIONAL HELPER FUNCTIONS
 
   describe("beginning_of_month") {

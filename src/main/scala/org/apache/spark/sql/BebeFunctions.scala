@@ -174,6 +174,13 @@ object BebeFunctions {
     MakeTimestamp(year.expr, month.expr, day.expr, hour.expr, min.expr, sec.expr)
   }
 
+  /**
+  nvl2(expr1, expr2, expr3) - Returns expr2 if expr1 is not null, or expr3 otherwise.
+   */
+  def bebe_nvl2(col1: Column, col2: Column, col3: Column): Column = withExpr {
+    Nvl2(col1.expr, col2.expr, col3.expr, If(IsNotNull(col1.expr), col2.expr, col3.expr))
+  }
+
   def bebe_stack(n: Column, exprs: Column*): Column =
     new Column(Stack(n.expr +: exprs.map(_.expr)))
 
