@@ -138,16 +138,40 @@ object BebeFunctions {
   }
 
   /**
-   * make_date(year, month, day) - Create date from year, month and day fields.
-   *
-   * Arguments:
-   *
-   * year - the year to represent, from 1 to 9999
-   * month - the month-of-year to represent, from 1 (January) to 12 (December)
-   * day - the day-of-month to represent, from 1 to 31
-   */
+    * make_date(year, month, day) - Create date from year, month and day fields.
+    *
+    * Arguments:
+    *
+    * year - the year to represent, from 1 to 9999
+    * month - the month-of-year to represent, from 1 (January) to 12 (December)
+    * day - the day-of-month to represent, from 1 to 31
+    */
   def bebe_make_date(year: Column, month: Column, day: Column): Column = withExpr {
     MakeDate(year.expr, month.expr, day.expr)
+  }
+
+  /**
+    * make_timestamp(year, month, day, hour, min, sec[, timezone]) - Create timestamp from year, month, day, hour, min, sec and timezone fields.
+    *
+    * Arguments:
+    *
+    * year - the year to represent, from 1 to 9999
+    * month - the month-of-year to represent, from 1 (January) to 12 (December)
+    * day - the day-of-month to represent, from 1 to 31
+    * hour - the hour-of-day to represent, from 0 to 23
+    * min - the minute-of-hour to represent, from 0 to 59
+    * sec - the second-of-minute and its micro-fraction to represent, from 0 to 60. If the sec argument equals to 60, the seconds field is set to 0 and 1 minute is added to the final timestamp.
+    * timezone - the time zone identifier. For example, CET, UTC and etc.
+    */
+  def bebe_make_timestamp(
+      year: Column,
+      month: Column,
+      day: Column,
+      hour: Column,
+      min: Column,
+      sec: Column
+  ): Column = withExpr {
+    MakeTimestamp(year.expr, month.expr, day.expr, hour.expr, min.expr, sec.expr)
   }
 
   def bebe_stack(n: Column, exprs: Column*): Column =
