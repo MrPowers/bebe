@@ -231,13 +231,15 @@ class BebeFunctionsSpec
         schema
       )
 
-      val actualDF = df.withColumn(
-        "animal_interpretation",
-        struct(
-          (col("weight") > 5).as("is_large_animal"),
-          col("animal_type").isin("rat", "cat", "dog").as("is_mammal")
+      val actualDF = df
+        .withColumn(
+          "animal_interpretation",
+          struct(
+            (col("weight") > 5).as("is_large_animal"),
+            col("animal_type").isin("rat", "cat", "dog").as("is_mammal")
+          )
         )
-      ).groupBy("animal_interpretation")
+        .groupBy("animal_interpretation")
         .agg(collect_list("animal_interpretation").as("interpretations"))
 
       val res = actualDF.select(bebe_inline(col("interpretations")))
@@ -247,7 +249,8 @@ class BebeFunctionsSpec
           (true, true),
           (false, false),
           (false, true)
-        ), List(
+        ),
+        List(
           ("is_large_animal", BooleanType, true),
           ("is_mammal", BooleanType, true)
         )
@@ -282,18 +285,20 @@ class BebeFunctionsSpec
 
   describe("bebe_like") {
     it("returns true if the pattern matches the SQL LIKE language") {
-      val df = spark.createDF(
-        List(
-        ("hi!", "hi_", true),
-        ("hello there person", "hello%", true),
-        ("whatever", "hello%", false),
-        (null, null, null)
-      ), List(
-          ("some_string", StringType, true),
-          ("like_regexp", StringType, true),
-          ("expected", BooleanType, true)
+      val df = spark
+        .createDF(
+          List(
+            ("hi!", "hi_", true),
+            ("hello there person", "hello%", true),
+            ("whatever", "hello%", false),
+            (null, null, null)
+          ),
+          List(
+            ("some_string", StringType, true),
+            ("like_regexp", StringType, true),
+            ("expected", BooleanType, true)
+          )
         )
-      )
         .withColumn("actual", bebe_like(col("some_string"), col("like_regexp")))
       assertColumnEquality(df, "actual", "expected")
     }
