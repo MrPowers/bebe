@@ -9,6 +9,7 @@ import mrpowers.bebe.SparkSessionTestWrapper
 import java.sql.{Date, Timestamp}
 import com.github.mrpowers.spark.daria.sql.SparkSessionExt._
 import org.apache.spark.sql.types._
+import java.sql.Date
 
 class BebeFunctionsSpec
     extends FunSpec
@@ -300,6 +301,26 @@ class BebeFunctionsSpec
           )
         )
         .withColumn("actual", bebe_like(col("some_string"), col("like_regexp")))
+      assertColumnEquality(df, "actual", "expected")
+    }
+  }
+
+  describe("bebe_make_date") {
+    it("creates a date") {
+      val df = spark
+        .createDF(
+          List(
+            (2020, 1, 1, Date.valueOf("2020-01-01")),
+            (2021, 3, 5, Date.valueOf("2021-03-05")),
+            (null, null, null, null)
+          ),
+          List(
+            ("year", IntegerType, true),
+            ("month", IntegerType, true),
+            ("day", IntegerType, true),
+            ("expected", DateType, true)
+          )
+        ).withColumn("actual", bebe_make_date(col("year"), col("month"), col("day")))
       assertColumnEquality(df, "actual", "expected")
     }
   }

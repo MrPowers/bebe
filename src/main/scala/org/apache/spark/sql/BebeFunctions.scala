@@ -137,6 +137,19 @@ object BebeFunctions {
     Like(col.expr, sqlLike.expr, '\\')
   }
 
+  /**
+   * make_date(year, month, day) - Create date from year, month and day fields.
+   *
+   * Arguments:
+   *
+   * year - the year to represent, from 1 to 9999
+   * month - the month-of-year to represent, from 1 (January) to 12 (December)
+   * day - the day-of-month to represent, from 1 to 31
+   */
+  def bebe_make_date(year: Column, month: Column, day: Column): Column = withExpr {
+    MakeDate(year.expr, month.expr, day.expr)
+  }
+
   def bebe_stack(n: Column, exprs: Column*): Column =
     new Column(Stack(n.expr +: exprs.map(_.expr)))
 
