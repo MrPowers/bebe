@@ -191,6 +191,26 @@ class BebeFunctionsSpec
     }
   }
 
+  describe("bebe_if_null") {
+    it("returns the col2 if col1 isn't null") {
+      val df = spark
+        .createDF(
+          List(
+            (null, "expr2", "expr2"),
+            ("expr1", null, "expr1"),
+            ("expr1", "expr2", "expr1")
+          ),
+          List(
+            ("col1", StringType, true),
+            ("col2", StringType, true),
+            ("expected", StringType, true)
+          )
+        )
+        .withColumn("actual", bebe_if_null(col("col1"), col("col2")))
+      assertColumnEquality(df, "actual", "expected")
+    }
+  }
+
   describe("bebe_is_not_null") {
     it("returns true if the element isn't null") {
       val df = Seq(

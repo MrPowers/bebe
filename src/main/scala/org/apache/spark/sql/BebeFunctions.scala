@@ -99,10 +99,17 @@ object BebeFunctions {
     */
   def bebe_chr(col: Column): Column = withExpr { Chr(col.expr) }
 
-/**
- * Returns Euler's number, e
- */
+  /**
+    * Returns Euler's number, e
+    */
   def bebe_e(): Column = withExpr { EulerNumber() }
+
+  /**
+    * ifnull(expr1, expr2) - Returns expr2 if expr1 is null, or expr1 otherwise.
+    */
+  def bebe_if_null(col1: Column, col2: Column): Column = withExpr {
+    IfNull(col1.expr, col2.expr, Coalesce(Seq(col1.expr, col2.expr)))
+  }
 
   /**
     * True if the current expression is NOT null.
