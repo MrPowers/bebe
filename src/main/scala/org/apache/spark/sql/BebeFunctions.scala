@@ -175,12 +175,22 @@ object BebeFunctions {
   }
 
   /**
-  nvl2(expr1, expr2, expr3) - Returns expr2 if expr1 is not null, or expr3 otherwise.
-   */
+    * nvl2(expr1, expr2, expr3) - Returns expr2 if expr1 is not null, or expr3 otherwise.
+    */
   def bebe_nvl2(col1: Column, col2: Column, col3: Column): Column = withExpr {
     Nvl2(col1.expr, col2.expr, col3.expr, If(IsNotNull(col1.expr), col2.expr, col3.expr))
   }
 
+  /**
+    * Returns the byte length of string data or number of bytes of binary data.
+    */
+  def bebe_octet_length(col: Column): Column = withExpr {
+    OctetLength(col.expr)
+  }
+
+  /**
+    * stack(n, expr1, ..., exprk) - Separates expr1, ..., exprk into n rows. Uses column names col0, col1, etc. by default unless specified otherwise.
+    */
   def bebe_stack(n: Column, exprs: Column*): Column =
     new Column(Stack(n.expr +: exprs.map(_.expr)))
 

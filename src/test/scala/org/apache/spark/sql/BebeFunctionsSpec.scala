@@ -381,6 +381,25 @@ class BebeFunctionsSpec
     }
   }
 
+  describe("bebe_octet_length") {
+    it("calculates the octet length of a string") {
+      val df = spark
+        .createDF(
+          List(
+            ("€", 3),
+            ("Spark SQL", 9),
+            (null, null)
+          ),
+          List(
+            ("some_string", StringType, true),
+            ("expected", IntegerType, true)
+          )
+        )
+        .withColumn("actual", bebe_octet_length(col("some_string")))
+      assertColumnEquality(df, "actual", "expected")
+    }
+  }
+
   // ADDITIONAL HELPER FUNCTIONS
 
   describe("beginning_of_month") {
