@@ -194,6 +194,20 @@ object BebeFunctions {
   def bebe_stack(n: Column, exprs: Column*): Column =
     new Column(Stack(n.expr +: exprs.map(_.expr)))
 
+  /**
+   * parse_url(url, partToExtract) - Extracts a part from a URL.
+   */
+  def bebe_parse_url(col: Column, partToExtract: Column): Column = withExpr {
+    ParseUrl(Seq(col.expr, partToExtract.expr))
+  }
+
+  /**
+   * parse_url(url, partToExtract, urlParamKey) - Extracts a URL parameter value.
+   */
+  def bebe_parse_url(col: Column, partToExtract: Column, urlParamKey: Column): Column = withExpr {
+    ParseUrl(Seq(col.expr, partToExtract.expr, urlParamKey.expr))
+  }
+
   // ADDITIONAL UTILITY FUNCTIONS
 
   def bebe_beginning_of_month(col: Column): Column =

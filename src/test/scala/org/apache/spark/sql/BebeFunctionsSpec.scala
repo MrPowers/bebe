@@ -400,6 +400,45 @@ class BebeFunctionsSpec
     }
   }
 
+  describe("bebe_parse_url") {
+    it("extracts a part from the URL") {
+      val df = spark
+        .createDF(
+          List(
+            ("http://spark.apache.org/path?query=1", "HOST", "spark.apache.org"),
+            ("http://spark.apache.org/path?query=1", "QUERY", "query=1"),
+            (null, null, null)
+          ),
+          List(
+            ("some_string", StringType, true),
+            ("part_to_extract", StringType, true),
+            ("expected", StringType, true)
+          )
+        )
+        .withColumn("actual", bebe_parse_url(col("some_string"), col("part_to_extract")))
+      assertColumnEquality(df, "actual", "expected")
+    }
+
+    it("extracts a parameter value from a URL") {
+      val df = spark
+        .createDF(
+          List(
+            ("http://spark.apache.org/path?funNumber=1", "QUERY", "funNumber", "1"),
+            ("http://spark.apache.org/path", "QUERY", "funNumber", null),
+            (null, null, null, null)
+          ),
+          List(
+            ("some_string", StringType, true),
+            ("part_to_extract", StringType, true),
+            ("urlParamKey", StringType, true),
+            ("expected", StringType, true)
+          )
+        )
+        .withColumn("actual", bebe_parse_url(col("some_string"), col("part_to_extract"), col("urlParamKey")))
+      assertColumnEquality(df, "actual", "expected")
+    }
+  }
+
   // ADDITIONAL HELPER FUNCTIONS
 
   describe("beginning_of_month") {
