@@ -208,6 +208,15 @@ object BebeFunctions {
     ParseUrl(Seq(col.expr, partToExtract.expr, urlParamKey.expr))
   }
 
+  /**
+   * percentile(col, percentage [, frequency]) - Returns the exact percentile value of numeric column col at the given percentage. The value of percentage must be between 0.0 and 1.0. The value of frequency should be positive integral
+   *
+   * percentile(col, array(percentage1 [, percentage2]...) [, frequency]) - Returns the exact percentile value array of numeric column col at the given percentage(s). Each value of the percentage array must be between 0.0 and 1.0. The value of frequency should be positive integral
+   */
+  def bebe_percentile(col: Column, percentage: Column): Column = withAggregateFunction {
+    Percentile(col.expr, percentage.expr, Literal(1L))
+  }
+
   // ADDITIONAL UTILITY FUNCTIONS
 
   def bebe_beginning_of_month(col: Column): Column =

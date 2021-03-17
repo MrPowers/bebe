@@ -439,6 +439,32 @@ class BebeFunctionsSpec
     }
   }
 
+  describe("bebe_percentile") {
+    it("computes the percentile") {
+      val df = spark
+        .createDF(
+          List(
+            (0),
+            (10)
+          ),
+          List(
+            ("some_int", IntegerType, true)
+          )
+        )
+        .agg(bebe_percentile(col("some_int"), lit(0.5)).as("50_percentile"))
+      val expected = spark
+        .createDF(
+          List(
+            (5.0)
+          ),
+          List(
+            ("50_percentile", DoubleType, true)
+          )
+        )
+      assertSmallDataFrameEquality(df, expected)
+    }
+  }
+
   // ADDITIONAL HELPER FUNCTIONS
 
   describe("beginning_of_month") {
