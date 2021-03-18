@@ -515,7 +515,9 @@ class BebeFunctionsSpec
     it("gets the rightmost N elements, similar to the right function") {
       val df = spark.createDF(
         List(
+          // start counting from left with 1 indexing
           ("brasil", 3, "asil"),
+          // can also start counting from the right
           ("peru", -2, "ru"),
           (null, null, null)
         ), List(
@@ -543,6 +545,18 @@ class BebeFunctionsSpec
       )
         .withColumn("actual", bebe_substr(col("some_string"), col("pos"), col("len")))
       assertColumnEquality(df, "actual", "expected")
+    }
+  }
+
+  describe("bebe_uuid") {
+    it("returns a uuid") {
+      val df = Seq(
+        ("hi", 36),
+        ("bye", 36)
+      ).toDF("some_string", "expected_length")
+        .withColumn("actual", bebe_uuid())
+        .withColumn("actual_length", length(col("actual")))
+      assertColumnEquality(df, "actual_length", "expected_length")
     }
   }
 

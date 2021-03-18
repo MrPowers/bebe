@@ -269,6 +269,10 @@ object BebeFunctions {
     Substring(col.expr, pos.expr, len.expr)
   }
 
+  def bebe_uuid(): Column = withExpr {
+    Uuid()
+  }
+
   // ADDITIONAL UTILITY FUNCTIONS
 
   def bebe_beginning_of_month(col: Column): Column =
