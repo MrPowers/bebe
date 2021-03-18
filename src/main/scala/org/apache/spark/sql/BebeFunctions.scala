@@ -249,36 +249,36 @@ object BebeFunctions {
   }
 
   /**
-   * space(n) - Returns a string consisting of n spaces.
-   */
+    * space(n) - Returns a string consisting of n spaces.
+    */
   def bebe_space(col: Column): Column = withExpr {
     StringSpace(col.expr)
   }
 
   /**
-   *substr(str, pos) - Returns the substring of str that starts at pos, or the slice of byte array that starts at pos.
-   */
+    * substr(str, pos) - Returns the substring of str that starts at pos, or the slice of byte array that starts at pos.
+    */
   def bebe_substr(col: Column, pos: Column): Column = withExpr {
     Substring(col.expr, pos.expr, Literal(Integer.MAX_VALUE))
   }
 
   /**
-   *substr(str, pos, len) - Returns the substring of str that starts at pos and is of length len, or the slice of byte array that starts at pos and is of length len.
-   */
+    * substr(str, pos, len) - Returns the substring of str that starts at pos and is of length len, or the slice of byte array that starts at pos and is of length len.
+    */
   def bebe_substr(col: Column, pos: Column, len: Column): Column = withExpr {
     Substring(col.expr, pos.expr, len.expr)
   }
 
   /**
-   *uuid() - Returns an universally unique identifier (UUID) string. The value is returned as a canonical UUID 36-character string.
-   */
+    * uuid() - Returns an universally unique identifier (UUID) string. The value is returned as a canonical UUID 36-character string.
+    */
   def bebe_uuid(): Column = withExpr {
     Uuid()
   }
 
   /**
-   *weekday(date) - Returns the day of the week for date/timestamp (0 = Monday, 1 = Tuesday, ..., 6 = Sunday).
-   */
+    * weekday(date) - Returns the day of the week for date/timestamp (0 = Monday, 1 = Tuesday, ..., 6 = Sunday).
+    */
   def bebe_weekday(col: Column): Column = withExpr {
     WeekDay(col.expr)
   }

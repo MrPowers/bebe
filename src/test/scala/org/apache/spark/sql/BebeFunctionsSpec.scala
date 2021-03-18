@@ -494,18 +494,20 @@ class BebeFunctionsSpec
 
   describe("bebe_space") {
     it("creates spaces") {
-      val df = spark.createDF(
-        List(
-          ("some", "thing", 2, "some  thing"),
-          ("like", "pizza", 3, "like   pizza"),
-          (null, null, null, null)
-        ), List(
-          ("str1", StringType, true),
-          ("str2", StringType, true),
-          ("spaces", IntegerType, true),
-          ("expected", StringType, true)
+      val df = spark
+        .createDF(
+          List(
+            ("some", "thing", 2, "some  thing"),
+            ("like", "pizza", 3, "like   pizza"),
+            (null, null, null, null)
+          ),
+          List(
+            ("str1", StringType, true),
+            ("str2", StringType, true),
+            ("spaces", IntegerType, true),
+            ("expected", StringType, true)
+          )
         )
-      )
         .withColumn("actual", concat(col("str1"), bebe_space(col("spaces")), col("str2")))
       assertColumnEquality(df, "actual", "expected")
     }
@@ -513,36 +515,40 @@ class BebeFunctionsSpec
 
   describe("bebe_substr") {
     it("gets the rightmost N elements, similar to the right function") {
-      val df = spark.createDF(
-        List(
-          // start counting from left with 1 indexing
-          ("brasil", 3, "asil"),
-          // can also start counting from the right
-          ("peru", -2, "ru"),
-          (null, null, null)
-        ), List(
-          ("some_string", StringType, true),
-          ("pos", IntegerType, true),
-          ("expected", StringType, true)
+      val df = spark
+        .createDF(
+          List(
+            // start counting from left with 1 indexing
+            ("brasil", 3, "asil"),
+            // can also start counting from the right
+            ("peru", -2, "ru"),
+            (null, null, null)
+          ),
+          List(
+            ("some_string", StringType, true),
+            ("pos", IntegerType, true),
+            ("expected", StringType, true)
+          )
         )
-      )
         .withColumn("actual", bebe_substr(col("some_string"), col("pos")))
       assertColumnEquality(df, "actual", "expected")
     }
 
     it("gets len elements, starting at pos") {
-      val df = spark.createDF(
-        List(
-          ("aaabbbccc", 3, 4, "abbb"),
-          ("aaabbbccc", 1, 3, "aaa"),
-          (null, null, null, null)
-        ), List(
-          ("some_string", StringType, true),
-          ("pos", IntegerType, true),
-          ("len", IntegerType, true),
-          ("expected", StringType, true)
+      val df = spark
+        .createDF(
+          List(
+            ("aaabbbccc", 3, 4, "abbb"),
+            ("aaabbbccc", 1, 3, "aaa"),
+            (null, null, null, null)
+          ),
+          List(
+            ("some_string", StringType, true),
+            ("pos", IntegerType, true),
+            ("len", IntegerType, true),
+            ("expected", StringType, true)
+          )
         )
-      )
         .withColumn("actual", bebe_substr(col("some_string"), col("pos"), col("len")))
       assertColumnEquality(df, "actual", "expected")
     }
@@ -562,17 +568,19 @@ class BebeFunctionsSpec
 
   describe("bebe_weekday") {
     it("returns an integer corresponding to the weekday") {
-      val df = spark.createDF(
-        List(
-          (Date.valueOf("2021-03-15"), 0),
-          (Date.valueOf("2021-03-17"), 2),
-          (Date.valueOf("2021-03-21"), 6),
-          (null, null)
-        ), List(
-          ("some_date", DateType, true),
-          ("expected", IntegerType, true)
+      val df = spark
+        .createDF(
+          List(
+            (Date.valueOf("2021-03-15"), 0),
+            (Date.valueOf("2021-03-17"), 2),
+            (Date.valueOf("2021-03-21"), 6),
+            (null, null)
+          ),
+          List(
+            ("some_date", DateType, true),
+            ("expected", IntegerType, true)
+          )
         )
-      )
         .withColumn("actual", bebe_weekday(col("some_date")))
       assertColumnEquality(df, "actual", "expected")
     }
