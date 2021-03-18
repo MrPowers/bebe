@@ -560,6 +560,24 @@ class BebeFunctionsSpec
     }
   }
 
+  describe("bebe_weekday") {
+    it("returns an integer corresponding to the weekday") {
+      val df = spark.createDF(
+        List(
+          (Date.valueOf("2021-03-15"), 0),
+          (Date.valueOf("2021-03-17"), 2),
+          (Date.valueOf("2021-03-21"), 6),
+          (null, null)
+        ), List(
+          ("some_date", DateType, true),
+          ("expected", IntegerType, true)
+        )
+      )
+        .withColumn("actual", bebe_weekday(col("some_date")))
+      assertColumnEquality(df, "actual", "expected")
+    }
+  }
+
   // ADDITIONAL HELPER FUNCTIONS
 
   describe("beginning_of_month") {

@@ -269,8 +269,18 @@ object BebeFunctions {
     Substring(col.expr, pos.expr, len.expr)
   }
 
+  /**
+   *uuid() - Returns an universally unique identifier (UUID) string. The value is returned as a canonical UUID 36-character string.
+   */
   def bebe_uuid(): Column = withExpr {
     Uuid()
+  }
+
+  /**
+   *weekday(date) - Returns the day of the week for date/timestamp (0 = Monday, 1 = Tuesday, ..., 6 = Sunday).
+   */
+  def bebe_weekday(col: Column): Column = withExpr {
+    WeekDay(col.expr)
   }
 
   // ADDITIONAL UTILITY FUNCTIONS
