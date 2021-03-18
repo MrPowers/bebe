@@ -2,7 +2,6 @@ package org.apache.spark.sql
 
 import org.scalatest.FunSpec
 import org.apache.spark.sql.functions._
-import org.apache.spark.sql.types._
 import org.apache.spark.sql.BebeFunctions._
 import com.github.mrpowers.spark.fast.tests.{ColumnComparer, DataFrameComparer}
 import mrpowers.bebe.SparkSessionTestWrapper
@@ -17,6 +16,32 @@ class BebeFunctionsSpec
     with DataFrameComparer {
 
   import spark.implicits._
+
+  // ADDITIONAL HELPER FUNCTIONS
+
+  describe("beginningOfMonth") {
+    it("gets the beginning of the month of a date column") {
+      val df = Seq(
+        (Date.valueOf("2020-01-15"), Date.valueOf("2020-01-01")),
+        (Date.valueOf("2020-01-20"), Date.valueOf("2020-01-01")),
+        (null, null)
+      ).toDF("some_date", "expected")
+        .withColumn("actual", beginningOfMonth(col("some_date")))
+      assertColumnEquality(df, "actual", "expected")
+    }
+
+    it("gets the beginning of the month of a timestamp column") {
+      val df = Seq(
+        (Timestamp.valueOf("2020-01-15 08:01:32"), Date.valueOf("2020-01-01")),
+        (Timestamp.valueOf("2020-01-20 23:03:22"), Date.valueOf("2020-01-01")),
+        (null, null)
+      ).toDF("some_time", "expected")
+        .withColumn("actual", beginningOfMonth(col("some_time")))
+      assertColumnEquality(df, "actual", "expected")
+    }
+  }
+
+  // MISSING SPARK FUNCTIONS
 
   describe("bebe_cardinality") {
     it("returns the size of an array") {
@@ -582,52 +607,6 @@ class BebeFunctionsSpec
           )
         )
         .withColumn("actual", bebe_weekday(col("some_date")))
-      assertColumnEquality(df, "actual", "expected")
-    }
-  }
-
-  // ADDITIONAL HELPER FUNCTIONS
-
-  describe("beginning_of_month") {
-//    it("has a good blog post example") {
-//      val df = Seq(
-//        (Date.valueOf("2020-01-15")),
-//        (Date.valueOf("2020-01-20")),
-//        (null)
-//      ).toDF("some_date")
-//        .withColumn("beginning_of_month", bebe_beginning_of_month(col("some_date")))
-//
-//      df.show()
-//      df.explain(true)
-//
-//      val df = Seq(
-//        (Date.valueOf("2020-01-15")),
-//        (Date.valueOf("2020-01-20")),
-//        (null)
-//      ).toDF("some_date")
-//        .withColumn("end_of_month", last_day(col("some_date")))
-//
-//      df.show()
-//      df.explain(true)
-//    }
-
-    it("gets the beginning of the month of a date column") {
-      val df = Seq(
-        (Date.valueOf("2020-01-15"), Date.valueOf("2020-01-01")),
-        (Date.valueOf("2020-01-20"), Date.valueOf("2020-01-01")),
-        (null, null)
-      ).toDF("some_date", "expected")
-        .withColumn("actual", bebe_beginning_of_month(col("some_date")))
-      assertColumnEquality(df, "actual", "expected")
-    }
-
-    it("gets the beginning of the month of a timestamp column") {
-      val df = Seq(
-        (Timestamp.valueOf("2020-01-15 08:01:32"), Date.valueOf("2020-01-01")),
-        (Timestamp.valueOf("2020-01-20 23:03:22"), Date.valueOf("2020-01-01")),
-        (null, null)
-      ).toDF("some_time", "expected")
-        .withColumn("actual", bebe_beginning_of_month(col("some_time")))
       assertColumnEquality(df, "actual", "expected")
     }
   }

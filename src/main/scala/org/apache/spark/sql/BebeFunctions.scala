@@ -21,6 +21,13 @@ object BebeFunctions {
     Column(func.toAggregateExpression(isDistinct))
   }
 
+  // ADDITIONAL UTILITY FUNCTIONS
+
+  def beginningOfMonth(col: Column): Column =
+    withExpr {
+      BeginningOfMonth(col.expr)
+    }
+
   // FUNCTIONS MISSING IN SCALA API
 
   /**
@@ -281,12 +288,5 @@ object BebeFunctions {
   def bebe_weekday(col: Column): Column = withExpr {
     WeekDay(col.expr)
   }
-
-  // ADDITIONAL UTILITY FUNCTIONS
-
-  def bebe_beginning_of_month(col: Column): Column =
-    withExpr {
-      BeginningOfMonth(col.expr)
-    }
 
 }
