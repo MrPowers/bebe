@@ -244,6 +244,14 @@ object BebeFunctions {
   def bebe_sentences(col: Column): Column = withExpr {
     Sentences(col.expr, Literal(""), Literal(""))
   }
+
+  /**
+   * space(n) - Returns a string consisting of n spaces.
+   */
+  def bebe_space(col: Column): Column = withExpr {
+    StringSpace(col.expr)
+  }
+
   // ADDITIONAL UTILITY FUNCTIONS
 
   def bebe_beginning_of_month(col: Column): Column =

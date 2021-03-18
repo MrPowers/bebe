@@ -492,6 +492,25 @@ class BebeFunctionsSpec
     }
   }
 
+  describe("bebe_space") {
+    it("creates spaces") {
+      val df = spark.createDF(
+        List(
+          ("some", "thing", 2, "some  thing"),
+          ("like", "pizza", 3, "like   pizza"),
+          (null, null, null, null)
+        ), List(
+          ("str1", StringType, true),
+          ("str2", StringType, true),
+          ("spaces", IntegerType, true),
+          ("expected", StringType, true)
+        )
+      )
+        .withColumn("actual", concat(col("str1"), bebe_space(col("spaces")), col("str2")))
+      assertColumnEquality(df, "actual", "expected")
+    }
+  }
+
   // ADDITIONAL HELPER FUNCTIONS
 
   describe("beginning_of_month") {
