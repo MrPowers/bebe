@@ -511,6 +511,41 @@ class BebeFunctionsSpec
     }
   }
 
+  describe("bebe_substr") {
+    it("gets the rightmost N elements, similar to the right function") {
+      val df = spark.createDF(
+        List(
+          ("brasil", 3, "asil"),
+          ("peru", -2, "ru"),
+          (null, null, null)
+        ), List(
+          ("some_string", StringType, true),
+          ("pos", IntegerType, true),
+          ("expected", StringType, true)
+        )
+      )
+        .withColumn("actual", bebe_substr(col("some_string"), col("pos")))
+      assertColumnEquality(df, "actual", "expected")
+    }
+
+    it("gets len elements, starting at pos") {
+      val df = spark.createDF(
+        List(
+          ("aaabbbccc", 3, 4, "abbb"),
+          ("aaabbbccc", 1, 3, "aaa"),
+          (null, null, null, null)
+        ), List(
+          ("some_string", StringType, true),
+          ("pos", IntegerType, true),
+          ("len", IntegerType, true),
+          ("expected", StringType, true)
+        )
+      )
+        .withColumn("actual", bebe_substr(col("some_string"), col("pos"), col("len")))
+      assertColumnEquality(df, "actual", "expected")
+    }
+  }
+
   // ADDITIONAL HELPER FUNCTIONS
 
   describe("beginning_of_month") {

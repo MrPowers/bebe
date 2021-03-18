@@ -11,7 +11,9 @@ import org.apache.spark.unsafe.types.UTF8String
   * @groupname math_funcs Math Functions
   */
 object BebeFunctions {
+
   private def withExpr(expr: Expression): Column = Column(expr)
+
   private def withAggregateFunction(
       func: AggregateFunction,
       isDistinct: Boolean = false
@@ -193,8 +195,9 @@ object BebeFunctions {
   /**
     * stack(n, expr1, ..., exprk) - Separates expr1, ..., exprk into n rows. Uses column names col0, col1, etc. by default unless specified otherwise.
     */
-  def bebe_stack(n: Column, exprs: Column*): Column =
-    new Column(Stack(n.expr +: exprs.map(_.expr)))
+  def bebe_stack(n: Column, exprs: Column*): Column = withExpr {
+    Stack(n.expr +: exprs.map(_.expr))
+  }
 
   /**
     * parse_url(url, partToExtract) - Extracts a part from a URL.
@@ -250,6 +253,20 @@ object BebeFunctions {
    */
   def bebe_space(col: Column): Column = withExpr {
     StringSpace(col.expr)
+  }
+
+  /**
+   *substr(str, pos) - Returns the substring of str that starts at pos, or the slice of byte array that starts at pos.
+   */
+  def bebe_substr(col: Column, pos: Column): Column = withExpr {
+    Substring(col.expr, pos.expr, Literal(Integer.MAX_VALUE))
+  }
+
+  /**
+   *substr(str, pos, len) - Returns the substring of str that starts at pos and is of length len, or the slice of byte array that starts at pos and is of length len.
+   */
+  def bebe_substr(col: Column, pos: Column, len: Column): Column = withExpr {
+    Substring(col.expr, pos.expr, len.expr)
   }
 
   // ADDITIONAL UTILITY FUNCTIONS
