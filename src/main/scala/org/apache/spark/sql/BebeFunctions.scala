@@ -197,31 +197,31 @@ object BebeFunctions {
     new Column(Stack(n.expr +: exprs.map(_.expr)))
 
   /**
-   * parse_url(url, partToExtract) - Extracts a part from a URL.
-   */
+    * parse_url(url, partToExtract) - Extracts a part from a URL.
+    */
   def bebe_parse_url(col: Column, partToExtract: Column): Column = withExpr {
     ParseUrl(Seq(col.expr, partToExtract.expr))
   }
 
   /**
-   * parse_url(url, partToExtract, urlParamKey) - Extracts a URL parameter value.
-   */
+    * parse_url(url, partToExtract, urlParamKey) - Extracts a URL parameter value.
+    */
   def bebe_parse_url(col: Column, partToExtract: Column, urlParamKey: Column): Column = withExpr {
     ParseUrl(Seq(col.expr, partToExtract.expr, urlParamKey.expr))
   }
 
   /**
-   * percentile(col, percentage [, frequency]) - Returns the exact percentile value of numeric column col at the given percentage. The value of percentage must be between 0.0 and 1.0. The value of frequency should be positive integral
-   *
-   * percentile(col, array(percentage1 [, percentage2]...) [, frequency]) - Returns the exact percentile value array of numeric column col at the given percentage(s). Each value of the percentage array must be between 0.0 and 1.0. The value of frequency should be positive integral
-   */
+    * percentile(col, percentage [, frequency]) - Returns the exact percentile value of numeric column col at the given percentage. The value of percentage must be between 0.0 and 1.0. The value of frequency should be positive integral
+    *
+    * percentile(col, array(percentage1 [, percentage2]...) [, frequency]) - Returns the exact percentile value array of numeric column col at the given percentage(s). Each value of the percentage array must be between 0.0 and 1.0. The value of frequency should be positive integral
+    */
   def bebe_percentile(col: Column, percentage: Column): Column = withAggregateFunction {
     Percentile(col.expr, percentage.expr, Literal(1L))
   }
 
   /**
-   * right(str, len) - Returns the rightmost len(len can be string type) characters from the string str,if len is less or equal than 0 the result is an empty string.
-   */
+    * right(str, len) - Returns the rightmost len(len can be string type) characters from the string str,if len is less or equal than 0 the result is an empty string.
+    */
   def bebe_right(col: Column, len: Column): Column = withExpr {
     Right(
       col.expr,
@@ -231,12 +231,19 @@ object BebeFunctions {
         Literal(null, StringType),
         If(
           LessThanOrEqual(len.expr, Literal(0)),
-          Literal(UTF8String.EMPTY_UTF8, StringType), new Substring(col.expr, UnaryMinus(len.expr))
+          Literal(UTF8String.EMPTY_UTF8, StringType),
+          new Substring(col.expr, UnaryMinus(len.expr))
         )
       )
     )
   }
 
+  /**
+    * sentences(str[, lang, country]) - Splits str into an array of array of words.
+    */
+  def bebe_sentences(col: Column): Column = withExpr {
+    Sentences(col.expr, Literal(""), Literal(""))
+  }
   // ADDITIONAL UTILITY FUNCTIONS
 
   def bebe_beginning_of_month(col: Column): Column =

@@ -434,7 +434,10 @@ class BebeFunctionsSpec
             ("expected", StringType, true)
           )
         )
-        .withColumn("actual", bebe_parse_url(col("some_string"), col("part_to_extract"), col("urlParamKey")))
+        .withColumn(
+          "actual",
+          bebe_parse_url(col("some_string"), col("part_to_extract"), col("urlParamKey"))
+        )
       assertColumnEquality(df, "actual", "expected")
     }
   }
@@ -473,6 +476,18 @@ class BebeFunctionsSpec
         (null, null)
       ).toDF("some_string", "expected")
         .withColumn("actual", bebe_right(col("some_string"), lit(2)))
+      assertColumnEquality(df, "actual", "expected")
+    }
+  }
+
+  describe("bebe_sentences") {
+    it("splits into an array of words") {
+      val df = Seq(
+        ("Hi there! Good morning.", Array(Array("Hi", "there"), Array("Good", "morning"))),
+        ("you are funny", Array(Array("you", "are", "funny"))),
+        (null, null)
+      ).toDF("some_string", "expected")
+        .withColumn("actual", bebe_sentences(col("some_string")))
       assertColumnEquality(df, "actual", "expected")
     }
   }
