@@ -465,6 +465,18 @@ class BebeFunctionsSpec
     }
   }
 
+  describe("bebe_right") {
+    it("gets the rightmost N elements from a string") {
+      val df = Seq(
+        ("this 23 has 44 numbers", "rs"),
+        ("no dice", "ce"),
+        (null, null)
+      ).toDF("some_string", "expected")
+        .withColumn("actual", bebe_right(col("some_string"), lit(2)))
+      assertColumnEquality(df, "actual", "expected")
+    }
+  }
+
   // ADDITIONAL HELPER FUNCTIONS
 
   describe("beginning_of_month") {

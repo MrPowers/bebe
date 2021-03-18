@@ -2,6 +2,8 @@ package org.apache.spark.sql
 
 import org.apache.spark.sql.catalyst.expressions._
 import org.apache.spark.sql.catalyst.expressions.aggregate._
+import org.apache.spark.sql.types.StringType
+import org.apache.spark.unsafe.types.UTF8String
 
 /**
   * @groupname string_funcs String Functions
@@ -215,6 +217,24 @@ object BebeFunctions {
    */
   def bebe_percentile(col: Column, percentage: Column): Column = withAggregateFunction {
     Percentile(col.expr, percentage.expr, Literal(1L))
+  }
+
+  /**
+   * right(str, len) - Returns the rightmost len(len can be string type) characters from the string str,if len is less or equal than 0 the result is an empty string.
+   */
+  def bebe_right(col: Column, len: Column): Column = withExpr {
+    Right(
+      col.expr,
+      len.expr,
+      If(
+        IsNull(col.expr),
+        Literal(null, StringType),
+        If(
+          LessThanOrEqual(len.expr, Literal(0)),
+          Literal(UTF8String.EMPTY_UTF8, StringType), new Substring(col.expr, UnaryMinus(len.expr))
+        )
+      )
+    )
   }
 
   // ADDITIONAL UTILITY FUNCTIONS
