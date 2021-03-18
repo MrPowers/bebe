@@ -35,9 +35,9 @@ object BebeFunctions {
     *
     *  @group agg_funcs
     */
-  def bebe_approx_percentile(column: Column, percentage: Column, accuracy: Column): Column =
+  def bebe_approx_percentile(col: Column, percentage: Column, accuracy: Column): Column =
     withAggregateFunction {
-      new ApproximatePercentile(column.expr, percentage.expr, accuracy.expr)
+      new ApproximatePercentile(col.expr, percentage.expr, accuracy.expr)
     }
 
   /**
@@ -50,9 +50,9 @@ object BebeFunctions {
     *
     *  @group agg_funcs
     */
-  def bebe_approx_percentile(column: Column, percentage: Column): Column =
+  def bebe_approx_percentile(col: Column, percentage: Column): Column =
     withAggregateFunction {
-      new ApproximatePercentile(column.expr, percentage.expr)
+      new ApproximatePercentile(col.expr, percentage.expr)
     }
 
   /**
@@ -64,25 +64,24 @@ object BebeFunctions {
     *
     * @group collection_funcs
     */
-  def bebe_cardinality(e: Column): Column = withExpr { Size(e.expr) }
+  def bebe_cardinality(col: Column): Column = withExpr { Size(col.expr) }
 
   /**
-    * <<<<<<< HEAD
     * Returns the cotangent of `expr`, as if computed by `java.lang.Math.cot`.
     *
-    * @param expr the column of which to compute the cotangent
+    * @param col the column of which to compute the cotangent
     */
-  def bebe_cot(expr: Column): Column = withExpr(Cot(expr.expr))
+  def bebe_cot(col: Column): Column = withExpr(Cot(col.expr))
 
   /**
     * Returns the number of `TRUE` values for the expression.
     *
     * @group agg_funcs
     *
-    * @param e the expression to conditionally count
+    * @param col the expression to conditionally count
     */
-  def bebe_count_if(e: Column): Column = withAggregateFunction {
-    CountIf(e.expr)
+  def bebe_count_if(col: Column): Column = withAggregateFunction {
+    CountIf(col.expr)
   }
 
   /**
@@ -195,8 +194,8 @@ object BebeFunctions {
   /**
     * stack(n, expr1, ..., exprk) - Separates expr1, ..., exprk into n rows. Uses column names col0, col1, etc. by default unless specified otherwise.
     */
-  def bebe_stack(n: Column, exprs: Column*): Column = withExpr {
-    Stack(n.expr +: exprs.map(_.expr))
+  def bebe_stack(col: Column, cols: Column*): Column = withExpr {
+    Stack(col.expr +: cols.map(_.expr))
   }
 
   /**
