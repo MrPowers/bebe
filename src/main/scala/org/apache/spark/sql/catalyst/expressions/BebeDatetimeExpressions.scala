@@ -16,7 +16,7 @@ import org.apache.spark.unsafe.types.UTF8String
        2009-01-01
   """,
   group = "datetime_funcs",
-  since = "3.1.0"
+  since = "0.0.2"
 )
 case class BeginningOfMonth(startDate: Expression)
     extends UnaryExpression
@@ -38,5 +38,5 @@ case class BeginningOfMonth(startDate: Expression)
     defineCodeGen(ctx, ev, sd => s"$dtu.parseTruncLevel($sd, $level)")
   }
 
-  override def prettyName: String = "bebe_beginning_of_month"
+  override def prettyName: String = "beginning_of_month"
 }

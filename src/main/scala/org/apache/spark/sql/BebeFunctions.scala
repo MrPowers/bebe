@@ -4,6 +4,7 @@ import org.apache.spark.sql.catalyst.expressions._
 import org.apache.spark.sql.catalyst.expressions.aggregate._
 import org.apache.spark.sql.types.StringType
 import org.apache.spark.unsafe.types.UTF8String
+import org.apache.spark.sql.functions.{lit, when}
 
 /**
   * @groupname string_funcs String Functions
@@ -22,6 +23,16 @@ object BebeFunctions {
   }
 
   // ADDITIONAL UTILITY FUNCTIONS
+
+  def beginningOfDay(col: Column): Column =
+    withExpr {
+      TruncTimestamp(lit("day").expr, col.expr, None)
+    }
+
+  def beginningOfDay(col: Column, timeZoneId: Option[String]): Column =
+    withExpr {
+      TruncTimestamp(lit("day").expr, col.expr, timeZoneId)
+    }
 
   def beginningOfMonth(col: Column): Column =
     withExpr {

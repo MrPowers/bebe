@@ -19,6 +19,28 @@ class BebeFunctionsSpec
 
   // ADDITIONAL HELPER FUNCTIONS
 
+  describe("beginningOfDay") {
+    it("returns the beginning of the day") {
+      val df = Seq(
+        (Timestamp.valueOf("2020-01-15 08:01:32"), Timestamp.valueOf("2020-01-15 00:00:00")),
+        (Timestamp.valueOf("2020-01-20 23:03:22"), Timestamp.valueOf("2020-01-20 00:00:00")),
+        (null, null)
+      ).toDF("some_time", "expected")
+        .withColumn("actual", beginningOfDay(col("some_time")))
+      assertColumnEquality(df, "actual", "expected")
+    }
+
+    it("returns the beginning of the day in a specific timezone") {
+      val df = Seq(
+        (Timestamp.valueOf("2020-01-15 08:01:32"), Timestamp.valueOf("2020-01-14 21:00:00")),
+        (Timestamp.valueOf("2020-01-20 23:03:22"), Timestamp.valueOf("2020-01-20 21:00:00")),
+        (null, null)
+      ).toDF("some_time", "expected")
+        .withColumn("actual", beginningOfDay(col("some_time"), Some("UTC")))
+      assertColumnEquality(df, "actual", "expected")
+    }
+  }
+
   describe("beginningOfMonth") {
     it("gets the beginning of the month of a date column") {
       val df = Seq(
