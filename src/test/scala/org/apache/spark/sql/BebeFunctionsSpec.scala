@@ -8,6 +8,11 @@ import mrpowers.bebe.SparkSessionTestWrapper
 import java.sql.{Date, Timestamp}
 import com.github.mrpowers.spark.daria.sql.SparkSessionExt._
 import org.apache.spark.sql.types._
+import java.time.ZonedDateTime
+import java.util.TimeZone
+import java.text.SimpleDateFormat
+import java.time.ZoneId
+import java.time.Instant
 
 class BebeFunctionsSpec
     extends FunSpec
@@ -18,6 +23,26 @@ class BebeFunctionsSpec
   import spark.implicits._
 
   // ADDITIONAL HELPER FUNCTIONS
+
+  private val regex = s"([0-9]{4})-([0-9]{2})-([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})".r
+
+  private def valueOf(date: String, zone: String): Instant = {
+    date match {
+      case regex(year, month, day, hour, minute, second) =>
+        ZonedDateTime
+          .of(
+            year.toInt,
+            month.toInt,
+            day.toInt,
+            hour.toInt,
+            minute.toInt,
+            second.toInt,
+            0,
+            ZoneId.of(zone)
+          )
+          .toInstant()
+    }
+  }
 
   describe("beginningOfDay") {
     it("returns the beginning of the day") {
@@ -31,13 +56,24 @@ class BebeFunctionsSpec
     }
 
     it("returns the beginning of the day in a specific timezone") {
+      println("timezone")
+      val testTimezone = "America/Bahia"
+      val defaultTimezone = TimeZone.getDefault()
+      val sparkDefaultTimezone = spark.conf.get("spark.sql.session.timeZone")
+      println(defaultTimezone.getDisplayName())
+      println(sparkDefaultTimezone)
+      TimeZone.setDefault(TimeZone.getTimeZone(testTimezone))
+      spark.conf.set("spark.sql.session.timeZone", testTimezone)
       val df = Seq(
-        (Timestamp.valueOf("2020-01-15 08:01:32"), Timestamp.valueOf("2020-01-14 21:00:00")),
-        (Timestamp.valueOf("2020-01-20 23:03:22"), Timestamp.valueOf("2020-01-20 21:00:00")),
+        (valueOf("2020-01-15 08:01:32", testTimezone), valueOf("2020-01-14 21:00:00", testTimezone)),
+        (valueOf("2020-01-20 23:03:22", testTimezone), valueOf("2020-01-20 21:00:00", testTimezone)),
         (null, null)
       ).toDF("some_time", "expected")
-        .withColumn("actual", beginningOfDay(col("some_time"), Some("UTC")))
+        .withColumn("actual", beginningOfDay(col("some_time"), "UTC"))
       assertColumnEquality(df, "actual", "expected")
+
+      TimeZone.setDefault(defaultTimezone)
+      spark.conf.set("spark.sql.session.timeZone", sparkDefaultTimezone)
     }
   }
 
