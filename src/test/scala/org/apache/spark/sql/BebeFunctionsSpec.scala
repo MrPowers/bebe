@@ -57,16 +57,22 @@ class BebeFunctionsSpec
 
     it("returns the beginning of the day in a specific timezone") {
       println("timezone")
-      val testTimezone = "America/Bahia"
-      val defaultTimezone = TimeZone.getDefault()
+      val testTimezone         = "America/Bahia"
+      val defaultTimezone      = TimeZone.getDefault()
       val sparkDefaultTimezone = spark.conf.get("spark.sql.session.timeZone")
       println(defaultTimezone.getDisplayName())
       println(sparkDefaultTimezone)
       TimeZone.setDefault(TimeZone.getTimeZone(testTimezone))
       spark.conf.set("spark.sql.session.timeZone", testTimezone)
       val df = Seq(
-        (valueOf("2020-01-15 08:01:32", testTimezone), valueOf("2020-01-14 21:00:00", testTimezone)),
-        (valueOf("2020-01-20 23:03:22", testTimezone), valueOf("2020-01-20 21:00:00", testTimezone)),
+        (
+          valueOf("2020-01-15 08:01:32", testTimezone),
+          valueOf("2020-01-14 21:00:00", testTimezone)
+        ),
+        (
+          valueOf("2020-01-20 23:03:22", testTimezone),
+          valueOf("2020-01-20 21:00:00", testTimezone)
+        ),
         (null, null)
       ).toDF("some_time", "expected")
         .withColumn("actual", beginningOfDay(col("some_time"), "UTC"))
