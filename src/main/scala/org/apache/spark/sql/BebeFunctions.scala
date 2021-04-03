@@ -29,9 +29,9 @@ object BebeFunctions {
       TruncTimestamp(lit("day").expr, col.expr, None)
     }
 
-  def beginningOfDay(col: Column, timeZoneId: Option[String]): Column =
+  def beginningOfDay(col: Column, timeZoneId: String): Column =
     withExpr {
-      TruncTimestamp(lit("day").expr, col.expr, timeZoneId)
+      TruncTimestamp(lit("day").expr, col.expr, Some(timeZoneId))
     }
 
   def beginningOfMonth(col: Column): Column =
@@ -300,4 +300,33 @@ object BebeFunctions {
     WeekDay(col.expr)
   }
 
+  /**
+    * Builder for case when that prevents coding errors
+    *
+    * @param cases a vector of previous added cases
+    */
+  case class WhenB(private val cases: Vector[(Column, Any)] = Vector.empty) {
+
+    private def casesToWhenColumn: Column = {
+      val head = cases.head
+      cases.tail.foldLeft(when(head._1, head._2))((w, c) => w.when(c._1, c._2))
+    }
+
+    def caseW(condition: Column, value: Any): WhenB =
+      WhenB(cases :+ (condition, value))
+
+    def otherwise(column: Any): Column =
+      if (cases.isEmpty)
+        lit(column)
+      else
+        casesToWhenColumn.otherwise(column)
+
+    def otherwiseNull: Column =
+      if (cases.isEmpty)
+        lit(null)
+      else
+        casesToWhenColumn
+  }
+
+  val whenBuilder = WhenB()
 }
