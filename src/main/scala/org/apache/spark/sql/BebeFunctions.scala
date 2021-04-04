@@ -240,6 +240,17 @@ object BebeFunctions {
   }
 
   /**
+   * Extract all strings in the `str` that match the `regexp` expression
+   * and corresponding to the regex group index.
+   * @group string_funcs
+   * @since 0.1.0
+   */
+  def bebe_regexp_extract_all(col: Column, regex: Column, groupIndex: Column): Column =
+    withExpr {
+      RegExpExtractAll(col.expr, regex.expr, groupIndex.expr)
+    }
+
+  /**
     * right(str, len) - Returns the rightmost len(len can be string type) characters from the string str,if len is less or equal than 0 the result is an empty string.
     */
   def bebe_right(col: Column, len: Column): Column = withExpr {

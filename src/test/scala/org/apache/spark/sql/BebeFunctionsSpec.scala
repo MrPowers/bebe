@@ -557,6 +557,18 @@ class BebeFunctionsSpec
     }
   }
 
+  describe("bebe_regexp_extract_all") {
+    it("extracts multiple results") {
+      val df = Seq(
+        ("this 23 has 44 numbers", Array("23", "44")),
+        ("no numbers", Array.empty[String]),
+        (null, null)
+      ).toDF("some_string", "expected")
+        .withColumn("actual", bebe_regexp_extract_all(col("some_string"), lit("(\\d+)"), lit(1)))
+      assertColumnEquality(df, "actual", "expected")
+    }
+  }
+
   describe("bebe_right") {
     it("gets the rightmost N elements from a string") {
       val df = Seq(
