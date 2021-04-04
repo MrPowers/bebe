@@ -21,6 +21,7 @@ bebe depends on Spark internals, so you need to be careful to select the right v
 
 | Spark | Scala | bebe  |
 |-------|-------|-------|
+| 3.1.1 | 2.12  | 0.1.0 |
 | 3.0.1 | 2.12  | 0.0.2 |
 
 ## BebeFunctions

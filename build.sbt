@@ -1,7 +1,7 @@
 organization := "com.github.mrpowers"
 name := "bebe"
 
-version := "0.0.2"
+version := "0.1.0"
 
 scalaVersion := "2.12.12"
 
