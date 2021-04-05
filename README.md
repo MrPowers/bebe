@@ -24,6 +24,16 @@ bebe depends on Spark internals, so you need to be careful to select the right v
 | 3.1.1 | 2.12  | 0.1.0 |
 | 3.0.1 | 2.12  | 0.0.2 |
 
+## Why bebe?
+
+The Spark maintainers have intentionally excluded some SQL functions from the Scala API.
+
+For example, [regexp_extract_all is not part of the Scala API](https://github.com/apache/spark/pull/31306#issuecomment-766466106).
+
+See [this email thread](http://apache-spark-developers-list.1001551.n3.nabble.com/Spark-SQL-SQL-Python-Scala-and-R-API-Consistency-td30620.html) for a detailed discussion on why the Spark core developers want to limit the size of the Scala API, even for functions that are in the SQL API.
+
+bebe provides access to these "missing functions" via the Scala API.  It also goes a step farther to provide access to additional functions that are commonly used (e.g. beginning of day).  All functions are implemented as catalyst expressions, so they're performant and can be optimized by Spark.
+
 ## Import
 
 Import the functions like this:
