@@ -24,13 +24,54 @@ bebe depends on Spark internals, so you need to be careful to select the right v
 | 3.1.1 | 2.12  | 0.1.0 |
 | 3.0.1 | 2.12  | 0.0.2 |
 
+## Import
+
+Import the functions like this:
+
+```scala
+import org.apache.spark.sql.BebeFunctions._
+```
+
+Here are the useful functions / missing functions that this lib provides access to:
+
+* beginningOfDay
+* beginningOfMonth
+* bebe_approx_percentile
+* bebe_cardinality
+* bebe_cot
+* bebe_count_if
+* bebe_character_length
+* bebe_chr
+* bebe_e
+* bebe_if_null
+* bebe_inline
+* bebe_is_not_null
+* bebe_left
+* bebe_like
+* bebe_make_date
+* bebe_make_timestamp
+* bebe_nvl2
+* bebe_octet_length
+* bebe_stack
+* bebe_parse_url
+* bebe_percentile
+* bebe_regexp_extract_all
+* bebe_right
+* bebe_sentences
+* bebe_space
+* bebe_substr
+* bebe_uuid
+* bebe_weekday
+
+Keep reading for examples on how to use these functions.
+
 ## BebeFunctions
 
-There are some Spark SQL functions that the maintainers don't want to expose via Scala.  For example, the Spark maintainers [intentionally removed regexp_extract_all](https://github.com/apache/spark/pull/31306#issuecomment-766466106) from the Scala API.
+There are some Spark SQL functions that the maintainers don't want to expose via Scala.  [regexp_extract_all is intentionally excluded from the Scala API](https://github.com/apache/spark/pull/31306#issuecomment-766466106) for example.
 
-This package provides easy Scala access to functions that are already implemented in SQL.
+This library provides easy access to the missing Scala functions.
 
-Let's extract all the numbers from the `some_string` column in the following DataFrame: 
+Here's a demonstration that shows how to use `bebe_regexp_extract_all` to extract all the numbers from the `some_string` column in the following DataFrame: 
 
 ```
 +----------------------+
@@ -62,4 +103,4 @@ df
 +----------------------+--------+
 ```
 
-The `BebeFunctions` are prefixed with `bebe` to avoid a name conflict in the unlikely event that `regexp_extract_all` is added to `org.apache.spark.sql.fucntions` at some point in the future.
+The `BebeFunctions` are prefixed with `bebe` in case `regexp_extract_all` is added to `org.apache.spark.sql.fucntions` at some point in the future.
