@@ -240,11 +240,11 @@ object BebeFunctions {
   }
 
   /**
-   * Extract all strings in the `str` that match the `regexp` expression
-   * and corresponding to the regex group index.
-   * @group string_funcs
-   * @since 0.1.0
-   */
+    * Extract all strings in the `str` that match the `regexp` expression
+    * and corresponding to the regex group index.
+    * @group string_funcs
+    * @since 0.1.0
+    */
   def bebe_regexp_extract_all(col: Column, regex: Column, groupIndex: Column): Column =
     withExpr {
       RegExpExtractAll(col.expr, regex.expr, groupIndex.expr)
