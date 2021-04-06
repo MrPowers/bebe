@@ -79,6 +79,76 @@ Keep reading for examples on how to use these functions.
 
 ## BebeFunctions
 
+### beginningOfDay
+
+Suppose you have the following DataFrame:
+
+```
++-------------------+
+|          some_time|
++-------------------+
+|2020-01-15 08:01:32|
+|2020-01-20 23:03:22|
+|               null|
++-------------------+
+```
+
+Calculate the beginning of the day:
+
+```scala
+df.withColumn("actual", beginningOfDay(col("some_time")))
+```
+
+```
++-------------------+-------------------+
+|          some_time|             actual|
++-------------------+-------------------+
+|2020-01-15 08:01:32|2020-01-15 00:00:00|
+|2020-01-20 23:03:22|2020-01-20 00:00:00|
+|               null|               null|
++-------------------+-------------------+
+```
+
+### beginningOfMonth
+
+### bebe_approx_percentile
+
+### bebe_cardinality
+
+### bebe_cot
+
+### bebe_count_if
+
+### bebe_character_length
+
+### bebe_chr
+
+### bebe_e
+
+### bebe_if_null
+
+### bebe_inline
+
+### bebe_is_not_null
+
+### bebe_left
+
+### bebe_like
+
+### bebe_make_date
+
+### bebe_make_timestamp
+
+### bebe_nvl2
+
+### bebe_octet_length
+
+### bebe_stack
+
+### bebe_parse_url
+
+### bebe_percentile
+
 ### bebe_regexp_extract_all
 
 Suppose you'd like to extract all the numbers from the `some_string` column in the following DataFrame:
@@ -112,6 +182,19 @@ df
 |null                  |null    |
 +----------------------+--------+
 ```
+
+### bebe_right
+
+### bebe_sentences
+
+### bebe_space
+
+### bebe_substr
+
+### bebe_uuid
+
+### bebe_weekday
+
 
 ## Code design
 

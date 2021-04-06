@@ -51,8 +51,11 @@ class BebeFunctionsSpec
         (Timestamp.valueOf("2020-01-20 23:03:22"), Timestamp.valueOf("2020-01-20 00:00:00")),
         (null, null)
       ).toDF("some_time", "expected")
+      df.select("some_time").show()
+      val resDF = df
         .withColumn("actual", beginningOfDay(col("some_time")))
-      assertColumnEquality(df, "actual", "expected")
+      resDF.select("some_time", "actual").show()
+      assertColumnEquality(resDF, "actual", "expected")
     }
 
     it("returns the beginning of the day in a specific timezone") {
