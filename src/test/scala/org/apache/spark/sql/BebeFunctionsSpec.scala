@@ -114,12 +114,11 @@ class BebeFunctionsSpec
 
   describe("bebe_approx_percentile") {
     it("calculates approximate percentiles") {
-      val df = (1 to 1000).toDF("col")
+      val df    = (1 to 1000).toDF("col")
       val resDF = df.select(bebe_approx_percentile(col("col"), array(lit(0.25), lit(0.99))))
       resDF.show()
     }
   }
-
 
   describe("bebe_cardinality") {
     it("returns the size of an array") {
@@ -195,38 +194,6 @@ class BebeFunctionsSpec
     }
   }
 
-  describe("bebe_stack") {
-    it("stacks stuff") {
-      val df = spark
-        .createDF(
-          List(
-            (1, 2, 3, 4),
-            (6, 7, 8, 9)
-          ),
-          List(
-            ("col1", IntegerType, true),
-            ("col2", IntegerType, true),
-            ("col3", IntegerType, true),
-            ("col4", IntegerType, true)
-          )
-        )
-        .select(bebe_stack(lit(2), col("col1"), col("col2"), col("col3"), col("col4")))
-      val expectedDF = spark.createDF(
-        List(
-          (1, 2),
-          (3, 4),
-          (6, 7),
-          (8, 9)
-        ),
-        List(
-          ("col0", IntegerType, true),
-          ("col1", IntegerType, true)
-        )
-      )
-      assertSmallDataFrameEquality(df, expectedDF)
-    }
-  }
-
   describe("bebe_character_length") {
     it("returns the number of characters in a string") {
       val df = spark
@@ -241,8 +208,10 @@ class BebeFunctionsSpec
             ("expected", IntegerType, true)
           )
         )
-        .withColumn("actual", bebe_character_length(col("some_string")))
-      assertColumnEquality(df, "actual", "expected")
+      df.select("some_string").show()
+      val resDF = df.withColumn("actual", bebe_character_length(col("some_string")))
+      resDF.select("some_string", "actual").show()
+      assertColumnEquality(resDF, "actual", "expected")
     }
 
     it("errors out when run on a column type that doesn't make sense") {
@@ -278,7 +247,10 @@ class BebeFunctionsSpec
             ("expected", StringType, true)
           )
         )
-        .withColumn("actual", bebe_chr(col("some_int")))
+      df.select("some_int").show()
+      val resDF = df.withColumn("actual", bebe_chr(col("some_int")))
+      resDF.select("some_int", "actual").show()
+      assertColumnEquality(resDF, "actual", "expected")
     }
   }
 
@@ -295,13 +267,15 @@ class BebeFunctionsSpec
             ("expected", DoubleType, true)
           )
         )
-        .withColumn("actual", bebe_e())
-      assertDoubleTypeColumnEquality(df, "actual", "expected", 0.001)
+      df.select("some_int").show()
+      val resDF = df.withColumn("actual", bebe_e())
+      resDF.select("some_int", "actual").show()
+      assertDoubleTypeColumnEquality(resDF, "actual", "expected", 0.001)
     }
   }
 
   describe("bebe_if_null") {
-    it("returns the col2 if col1 isn't null") {
+    it("returns col2 if col1 isn't null") {
       val df = spark
         .createDF(
           List(
@@ -315,8 +289,10 @@ class BebeFunctionsSpec
             ("expected", StringType, true)
           )
         )
-        .withColumn("actual", bebe_if_null(col("col1"), col("col2")))
-      assertColumnEquality(df, "actual", "expected")
+      df.select("col1", "col2").show()
+      val resDF = df.withColumn("actual", bebe_if_null(col("col1"), col("col2")))
+      resDF.select("col1", "col2", "actual").show()
+      assertColumnEquality(resDF, "actual", "expected")
     }
   }
 
@@ -351,7 +327,10 @@ class BebeFunctionsSpec
         .groupBy("animal_interpretation")
         .agg(collect_list("animal_interpretation").as("interpretations"))
 
+      actualDF.show()
+
       val res = actualDF.select(bebe_inline(col("interpretations")))
+      res.show()
 
       val expected = spark.createDF(
         List(
@@ -375,8 +354,10 @@ class BebeFunctionsSpec
         (null, false),
         ("hi", true)
       ).toDF("some_string", "expected")
-        .withColumn("actual", bebe_is_not_null(col("some_string")))
-      assertColumnEquality(df, "actual", "expected")
+      df.select("some_string").show()
+      val resDF = df.withColumn("actual", bebe_is_not_null(col("some_string")))
+      resDF.select("some_string", "actual").show()
+      assertColumnEquality(resDF, "actual", "expected")
     }
   }
 
@@ -387,8 +368,10 @@ class BebeFunctionsSpec
         ("no numbers", "no"),
         (null, null)
       ).toDF("some_string", "expected")
-        .withColumn("actual", bebe_left(col("some_string"), lit(2)))
-      assertColumnEquality(df, "actual", "expected")
+      df.select("some_string").show(false)
+      val resDF = df.withColumn("actual", bebe_left(col("some_string"), lit(2)))
+      resDF.select("some_string", "actual").show(false)
+      assertColumnEquality(resDF, "actual", "expected")
     }
   }
 
@@ -408,8 +391,10 @@ class BebeFunctionsSpec
             ("expected", BooleanType, true)
           )
         )
-        .withColumn("actual", bebe_like(col("some_string"), col("like_regexp")))
-      assertColumnEquality(df, "actual", "expected")
+      df.select("some_string", "like_regexp").show()
+      val resDF = df.withColumn("actual", bebe_like(col("some_string"), col("like_regexp")))
+      resDF.select("some_string", "like_regexp", "actual").show()
+      assertColumnEquality(resDF, "actual", "expected")
     }
   }
 
@@ -429,8 +414,10 @@ class BebeFunctionsSpec
             ("expected", DateType, true)
           )
         )
-        .withColumn("actual", bebe_make_date(col("year"), col("month"), col("day")))
-      assertColumnEquality(df, "actual", "expected")
+      df.select("year", "month", "day").show()
+      val resDF = df.withColumn("actual", bebe_make_date(col("year"), col("month"), col("day")))
+      resDF.select("year", "month", "day", "actual").show()
+      assertColumnEquality(resDF, "actual", "expected")
     }
   }
 
@@ -453,18 +440,20 @@ class BebeFunctionsSpec
             ("expected", TimestampType, true)
           )
         )
-        .withColumn(
-          "actual",
-          bebe_make_timestamp(
-            col("year"),
-            col("month"),
-            col("day"),
-            col("hours"),
-            col("minutes"),
-            col("seconds")
-          )
+      df.select("year", "month", "day", "hours", "minutes", "seconds").show()
+      val resDF = df.withColumn(
+        "actual",
+        bebe_make_timestamp(
+          col("year"),
+          col("month"),
+          col("day"),
+          col("hours"),
+          col("minutes"),
+          col("seconds")
         )
-      assertColumnEquality(df, "actual", "expected")
+      )
+      resDF.select("year", "month", "day", "hours", "minutes", "seconds", "actual").show()
+      assertColumnEquality(resDF, "actual", "expected")
     }
   }
 
@@ -504,8 +493,10 @@ class BebeFunctionsSpec
             ("expected", IntegerType, true)
           )
         )
-        .withColumn("actual", bebe_octet_length(col("some_string")))
-      assertColumnEquality(df, "actual", "expected")
+      df.select("some_string").show()
+      val resDF = df.withColumn("actual", bebe_octet_length(col("some_string")))
+      resDF.select("some_string", "actual").show()
+      assertColumnEquality(resDF, "actual", "expected")
     }
   }
 
@@ -524,8 +515,11 @@ class BebeFunctionsSpec
             ("expected", StringType, true)
           )
         )
-        .withColumn("actual", bebe_parse_url(col("some_string"), col("part_to_extract")))
-      assertColumnEquality(df, "actual", "expected")
+      df.select("some_string", "part_to_extract").show(false)
+      val resDF =
+        df.withColumn("actual", bebe_parse_url(col("some_string"), col("part_to_extract")))
+      resDF.select("some_string", "part_to_extract", "actual").show(false)
+      assertColumnEquality(resDF, "actual", "expected")
     }
 
     it("extracts a parameter value from a URL") {
@@ -563,7 +557,9 @@ class BebeFunctionsSpec
             ("some_int", IntegerType, true)
           )
         )
-        .agg(bebe_percentile(col("some_int"), lit(0.5)).as("50_percentile"))
+      df.show()
+      val resDF = df.agg(bebe_percentile(col("some_int"), lit(0.5)).as("50_percentile"))
+      resDF.show()
       val expected = spark
         .createDF(
           List(
@@ -573,7 +569,7 @@ class BebeFunctionsSpec
             ("50_percentile", DoubleType, true)
           )
         )
-      assertSmallDataFrameEquality(df, expected)
+      assertSmallDataFrameEquality(resDF, expected)
     }
   }
 
@@ -596,8 +592,10 @@ class BebeFunctionsSpec
         ("no dice", "ce"),
         (null, null)
       ).toDF("some_string", "expected")
-        .withColumn("actual", bebe_right(col("some_string"), lit(2)))
-      assertColumnEquality(df, "actual", "expected")
+      df.select("some_string").show(false)
+      val resDF = df.withColumn("actual", bebe_right(col("some_string"), lit(2)))
+      resDF.select("some_string", "actual").show(false)
+      assertColumnEquality(resDF, "actual", "expected")
     }
   }
 
@@ -608,8 +606,10 @@ class BebeFunctionsSpec
         ("you are funny", Array(Array("you", "are", "funny"))),
         (null, null)
       ).toDF("some_string", "expected")
-        .withColumn("actual", bebe_sentences(col("some_string")))
-      assertColumnEquality(df, "actual", "expected")
+      df.select("some_string").show(false)
+      val resDF = df.withColumn("actual", bebe_sentences(col("some_string")))
+      resDF.select("some_string", "actual").show(false)
+      assertColumnEquality(resDF, "actual", "expected")
     }
   }
 
@@ -629,13 +629,50 @@ class BebeFunctionsSpec
             ("expected", StringType, true)
           )
         )
-        .withColumn("actual", concat(col("str1"), bebe_space(col("spaces")), col("str2")))
-      assertColumnEquality(df, "actual", "expected")
+      df.select("str1", "str2", "spaces").show()
+      val resDF =
+        df.withColumn("actual", concat(col("str1"), bebe_space(col("spaces")), col("str2")))
+      resDF.select("str1", "str2", "spaces", "actual").show()
+      assertColumnEquality(resDF, "actual", "expected")
+    }
+  }
+
+  describe("bebe_stack") {
+    it("stacks stuff") {
+      val df = spark
+        .createDF(
+          List(
+            (1, 2, 3, 4),
+            (6, 7, 8, 9)
+          ),
+          List(
+            ("col1", IntegerType, true),
+            ("col2", IntegerType, true),
+            ("col3", IntegerType, true),
+            ("col4", IntegerType, true)
+          )
+        )
+      df.show()
+      val resDF = df.select(bebe_stack(lit(2), col("col1"), col("col2"), col("col3"), col("col4")))
+      resDF.show()
+      val expectedDF = spark.createDF(
+        List(
+          (1, 2),
+          (3, 4),
+          (6, 7),
+          (8, 9)
+        ),
+        List(
+          ("col0", IntegerType, true),
+          ("col1", IntegerType, true)
+        )
+      )
+      assertSmallDataFrameEquality(resDF, expectedDF)
     }
   }
 
   describe("bebe_substr") {
-    it("gets the rightmost N elements, similar to the right function") {
+    it("gets tail elements, starting at pos.  start counting from right if pos is negative") {
       val df = spark
         .createDF(
           List(
@@ -651,8 +688,10 @@ class BebeFunctionsSpec
             ("expected", StringType, true)
           )
         )
-        .withColumn("actual", bebe_substr(col("some_string"), col("pos")))
-      assertColumnEquality(df, "actual", "expected")
+      df.select("some_string", "pos").show()
+      val resDF = df.withColumn("actual", bebe_substr(col("some_string"), col("pos")))
+      resDF.select("some_string", "pos", "actual").show()
+      assertColumnEquality(resDF, "actual", "expected")
     }
 
     it("gets len elements, starting at pos") {
@@ -681,9 +720,11 @@ class BebeFunctionsSpec
         ("hi", 36),
         ("bye", 36)
       ).toDF("some_string", "expected_length")
+      df.withColumn("actual", bebe_uuid()).select("actual").show(false)
+      val resDF = df
         .withColumn("actual", bebe_uuid())
         .withColumn("actual_length", length(col("actual")))
-      assertColumnEquality(df, "actual_length", "expected_length")
+      assertColumnEquality(resDF, "actual_length", "expected_length")
     }
   }
 
@@ -702,8 +743,10 @@ class BebeFunctionsSpec
             ("expected", IntegerType, true)
           )
         )
-        .withColumn("actual", bebe_weekday(col("some_date")))
-      assertColumnEquality(df, "actual", "expected")
+      df.select("some_date").show(false)
+      val resDF = df.withColumn("actual", bebe_weekday(col("some_date")))
+      resDF.select("some_date", "actual").show(false)
+      assertColumnEquality(resDF, "actual", "expected")
     }
   }
 
