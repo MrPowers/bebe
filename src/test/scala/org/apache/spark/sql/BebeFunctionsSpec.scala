@@ -344,7 +344,7 @@ class BebeFunctionsSpec
         )
       )
 
-      assertSmallDataFrameEquality(res, expected)
+      assertSmallDataFrameEquality(res, expected, orderedComparison = false)
     }
   }
 

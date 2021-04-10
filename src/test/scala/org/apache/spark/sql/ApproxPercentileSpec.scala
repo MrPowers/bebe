@@ -20,6 +20,7 @@ package org.apache.spark.sql.bebe
 
 import java.sql.{Date, Timestamp}
 
+import com.github.mrpowers.spark.daria.sql.SparkSessionExt.SparkSessionMethods
 import org.apache.spark.sql.{DataFrame, Row}
 import org.apache.spark.sql.BebeFunctions.bebe_approx_percentile
 import org.apache.spark.sql.expressions.Window
@@ -28,12 +29,12 @@ import org.apache.spark.sql.catalyst.expressions.aggregate.ApproximatePercentile
 import org.apache.spark.sql.catalyst.expressions.aggregate.ApproximatePercentile.PercentileDigest
 import org.apache.spark.sql.catalyst.util.DateTimeUtils
 import org.apache.spark.sql.functions._
+import org.apache.spark.sql.types._
 import org.scalatest.FunSuite
-
-import com.github.mrpowers.spark.fast.tests.DatasetComparer
+import com.github.mrpowers.spark.fast.tests.{DataFrameComparer, DatasetComparer}
 import mrpowers.bebe.SparkSessionTestWrapper
 
-class ApproxPercentileSpec extends FunSuite with SparkSessionTestWrapper {
+class ApproxPercentileSpec extends FunSuite with SparkSessionTestWrapper with DataFrameComparer {
 
   private def checkAnswer(df: DataFrame, rows: Seq[Row]): Unit = {
     assert(df.collect.toSeq == rows)
@@ -157,12 +158,21 @@ class ApproxPercentileSpec extends FunSuite with SparkSessionTestWrapper {
 
   test("approx_percentile(null), aggregation with group by") {
     val table = (1 to 1000).map(x => (x % 3, x)).toDF("key", "value")
-    checkAnswer(
-      table
-        .groupBy("key")
-        .agg(bebe_approx_percentile(lit(null), lit(0.5))),
-      Seq(Row(1, null), Row(2, null), Row(0, null))
+    val df = table
+      .groupBy("key")
+      .agg(bebe_approx_percentile(lit(null), lit(0.5)).as("res"))
+    val expected = spark.createDF(
+      List(
+        (1, null),
+        (2, null),
+        (0, null)
+      ),
+      List(
+        ("key", IntegerType, false),
+        ("res", DoubleType, true)
+      )
     )
+    assertSmallDataFrameEquality(df, expected, orderedComparison = false, ignoreNullable = true)
   }
 
   test("approx_percentile(null), aggregation without group by") {
@@ -217,29 +227,13 @@ class ApproxPercentileSpec extends FunSuite with SparkSessionTestWrapper {
   test("approx_percentile(col, ...) works in window function") {
     val data  = (1 to 10).map(v => (v % 2, v))
     val table = data.toDF("key", "value")
-
     val windowSpec = Window
       .partitionBy(col("key"))
       .orderBy(col("value"))
       .rowsBetween(Window.unboundedPreceding, 0)
-    val query = table
-      .select(bebe_approx_percentile(col("value"), lit(0.5)).over(windowSpec))
-
-    val expected = data.groupBy(_._1).toSeq.flatMap { group =>
-      val (key, values) = group
-      val sortedValues  = values.map(_._2).sorted
-
-      var outputRows = Seq.empty[Row]
-      var i          = 0
-
-      val percentile = new PercentileDigest(1.0 / DEFAULT_PERCENTILE_ACCURACY)
-      sortedValues.foreach { value =>
-        percentile.add(value)
-        outputRows :+= Row(percentile.getPercentiles(Array(0.5d)).head)
-      }
-      outputRows
-    }
-
-    checkAnswer(query, expected)
+    val query: DataFrame = table
+      .select(bebe_approx_percentile(col("value"), lit(0.5)).over(windowSpec).as("res"))
+    val expected = Seq(2, 2, 4, 4, 6, 1, 1, 3, 3, 5).toDF("res")
+    assertSmallDataFrameEquality(query, expected, ignoreNullable = true)
   }
 }
