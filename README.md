@@ -46,34 +46,34 @@ import org.apache.spark.sql.BebeFunctions._
 
 Here are the useful functions / missing functions that this lib provides access to:
 
-* beginningOfDay
-* beginningOfMonth
-* bebe_approx_percentile
-* bebe_cardinality
-* bebe_cot
-* bebe_count_if
-* bebe_character_length
-* bebe_chr
-* bebe_e
-* bebe_if_null
-* bebe_inline
-* bebe_is_not_null
-* bebe_left
-* bebe_like
-* bebe_make_date
-* bebe_make_timestamp
-* bebe_nvl2
-* bebe_octet_length
-* bebe_stack
-* bebe_parse_url
-* bebe_percentile
-* bebe_regexp_extract_all
-* bebe_right
-* bebe_sentences
-* bebe_space
-* bebe_substr
-* bebe_uuid
-* bebe_weekday
+* [beginningOfDay](#beginningofday)
+* [beginningOfMonth](#beginningofmonth)
+* [bebe_approx_percentile](#bebe_approx_percentile)
+* [bebe_cardinality](#bebe_cardinality)
+* [bebe_cot](#bebe_cot)
+* [bebe_count_if](#bebe_count_if)
+* [bebe_character_length](#bebe_character_length)
+* [bebe_chr](#bebe_chr)
+* [bebe_e](#bebe_e)
+* [bebe_if_null](#bebe_if_null)
+* [bebe_inline](#bebe_inline)
+* [bebe_is_not_null](#bebe_is_not_null)
+* [bebe_left](#bebe_left)
+* [bebe_like](#bebe_like)
+* [bebe_make_date](#bebe_make_date)
+* [bebe_make_timestamp](#bebe_make_timestamp)
+* [bebe_nvl2](#bebe_nvl2)
+* [bebe_octet_length](#bebe_octet_length)
+* [bebe_stack](#bebe_stack)
+* [bebe_parse_url](#bebe_parse_url)
+* [bebe_percentile](#bebe_percentile)
+* [bebe_regexp_extract_all](#bebe_regexp_extract_all)
+* [bebe_right](#bebe_right)
+* [bebe_sentences](#bebe_sentences)
+* [bebe_space](#bebe_space)
+* [bebe_substr](#bebe_substr)
+* [bebe_uuid](#bebe_uuid)
+* [bebe_weekday](#bebe_weekday)
 
 Keep reading for examples on how to use these functions.
 
