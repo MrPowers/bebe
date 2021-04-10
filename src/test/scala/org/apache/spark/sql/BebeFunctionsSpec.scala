@@ -93,8 +93,10 @@ class BebeFunctionsSpec
         (Date.valueOf("2020-01-20"), Date.valueOf("2020-01-01")),
         (null, null)
       ).toDF("some_date", "expected")
-        .withColumn("actual", beginningOfMonth(col("some_date")))
-      assertColumnEquality(df, "actual", "expected")
+      df.select("some_date").show()
+      val resDF = df.withColumn("actual", beginningOfMonth(col("some_date")))
+      resDF.select("some_date", "actual").show()
+      assertColumnEquality(resDF, "actual", "expected")
     }
 
     it("gets the beginning of the month of a timestamp column") {
@@ -110,6 +112,15 @@ class BebeFunctionsSpec
 
   // MISSING SPARK FUNCTIONS
 
+  describe("bebe_approx_percentile") {
+    it("calculates approximate percentiles") {
+      val df = (1 to 1000).toDF("col")
+      val resDF = df.select(bebe_approx_percentile(col("col"), array(lit(0.25), lit(0.99))))
+      resDF.show()
+    }
+  }
+
+
   describe("bebe_cardinality") {
     it("returns the size of an array") {
       val df = Seq(
@@ -117,8 +128,10 @@ class BebeFunctionsSpec
         (Array.empty[String], 0),
         (null, -1)
       ).toDF("some_strings", "expected")
-        .withColumn("actual", bebe_cardinality(col("some_strings")))
-      assertColumnEquality(df, "actual", "expected")
+      df.select("some_strings").show()
+      val resDF = df.withColumn("actual", bebe_cardinality(col("some_strings")))
+      resDF.select("some_strings", "actual").show()
+      assertColumnEquality(resDF, "actual", "expected")
     }
 
     it("returns the size of a map") {
@@ -146,14 +159,16 @@ class BebeFunctionsSpec
             ("expected", DoubleType, true)
           )
         )
-        .withColumn("actual", bebe_cot(col("some_degree")))
-      assertDoubleTypeColumnEquality(df, "actual", "expected", 0.01)
+      df.select("some_degree").show()
+      val resDF = df.withColumn("actual", bebe_cot(col("some_degree")))
+      resDF.select("some_degree", "actual").show()
+      assertDoubleTypeColumnEquality(resDF, "actual", "expected", 0.01)
     }
   }
 
   describe("bebe_count_if") {
     it("returns the count if the predicate is true") {
-      val actualDF = spark
+      val df = spark
         .createDF(
           List(
             (4),
@@ -164,7 +179,9 @@ class BebeFunctionsSpec
             ("some_int", IntegerType, true)
           )
         )
-        .agg(bebe_count_if(col("some_int") < 5).as("lt_five_count"))
+      df.show()
+      val resDF = df.agg(bebe_count_if(col("some_int") < 5).as("lt_five_count"))
+      resDF.show()
       val expectedDF = spark
         .createDF(
           List(
@@ -174,7 +191,7 @@ class BebeFunctionsSpec
             ("lt_five_count", LongType, true)
           )
         )
-      assertSmallDataFrameEquality(actualDF, expectedDF, ignoreNullable = true)
+      assertSmallDataFrameEquality(resDF, expectedDF, ignoreNullable = true)
     }
   }
 

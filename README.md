@@ -111,43 +111,367 @@ df.withColumn("actual", beginningOfDay(col("some_time")))
 
 ### beginningOfMonth
 
+Suppose you have the following DataFrame:
+
+```
++----------+
+| some_date|
++----------+
+|2020-01-15|
+|2020-01-20|
+|      null|
++----------+
+```
+
+Calculate the beginning of the day:
+
+```scala
+val resDF = df.withColumn("actual", beginningOfMonth(col("some_date")))
+```
+
+```
++----------+----------+
+| some_date|    actual|
++----------+----------+
+|2020-01-15|2020-01-01|
+|2020-01-20|2020-01-01|
+|      null|      null|
++----------+----------+
+```
+
 ### bebe_approx_percentile
+
+Here's how to create a DataFrame with the numbers from 1 to 1000 and then compute the 25th and 99th percentiles:
+
+```scala
+val df = (1 to 1000).toDF("col")
+val resDF = df.select(bebe_approx_percentile(col("col"), array(lit(0.25), lit(0.99))))
+resDF.show()
+```
+
+```
++------------------------------------------------+
+|percentile_approx(col, array(0.25, 0.99), 10000)|
++------------------------------------------------+
+|                                      [250, 990]|
++------------------------------------------------+
+```
+
+The function returns an array of results that correspond to the inputted percentiled.
 
 ### bebe_cardinality
 
+Suppose you have the following DataFrame:
+
+```
++------------+
+|some_strings|
++------------+
+|    [23, 44]|
+|          []|
+|        null|
++------------+
+```
+
+Calculate the beginning of the day:
+
+```scala
+val resDF = df.withColumn("actual", bebe_cardinality(col("some_strings")))
+```
+
+```
++------------+------+
+|some_strings|actual|
++------------+------+
+|    [23, 44]|     2|
+|          []|     0|
+|        null|    -1|
++------------+------+
+```
+
 ### bebe_cot
+
+Suppose you have the following DataFrame:
+
+```
++-----------+
+|some_degree|
++-----------+
+|         60|
+|        100|
+|       null|
++-----------+
+```
+
+Calculate the cotangent of these values:
+
+```scala
+df.withColumn("actual", bebe_cot(col("some_degree")))
+```
+
+```
++-----------+------------------+
+|some_degree|            actual|
++-----------+------------------+
+|         60| 3.124605622242308|
+|        100|-1.702956919426469|
+|       null|              null|
++-----------+------------------+
+```
 
 ### bebe_count_if
 
+Suppose you have the following DataFrame:
+
+```
++--------+
+|some_int|
++--------+
+|       4|
+|       3|
+|      10|
++--------+
+```
+
+Calculate the count of all the integers that are less than five:
+
+```scala
+val resDF = df.agg(bebe_count_if(col("some_int") < 5).as("lt_five_count"))
+resDF.show()
+```
+
+```
++-------------+
+|lt_five_count|
++-------------+
+|            2|
++-------------+
+```
+
 ### bebe_character_length
+
+Suppose you have the following DataFrame:
+
+```
+```
+
+Calculate the beginning of the day:
+
+```scala
+```
+
+```
+```
 
 ### bebe_chr
 
+Suppose you have the following DataFrame:
+
+```
+```
+
+Calculate the beginning of the day:
+
+```scala
+```
+
+```
+```
+
 ### bebe_e
+
+Suppose you have the following DataFrame:
+
+```
+```
+
+Calculate the beginning of the day:
+
+```scala
+```
+
+```
+```
 
 ### bebe_if_null
 
+Suppose you have the following DataFrame:
+
+```
+```
+
+Calculate the beginning of the day:
+
+```scala
+```
+
+```
+```
+
 ### bebe_inline
+
+Suppose you have the following DataFrame:
+
+```
+```
+
+Calculate the beginning of the day:
+
+```scala
+```
+
+```
+```
 
 ### bebe_is_not_null
 
+Suppose you have the following DataFrame:
+
+```
+```
+
+Calculate the beginning of the day:
+
+```scala
+```
+
+```
+```
+
 ### bebe_left
+
+Suppose you have the following DataFrame:
+
+```
+```
+
+Calculate the beginning of the day:
+
+```scala
+```
+
+```
+```
 
 ### bebe_like
 
+Suppose you have the following DataFrame:
+
+```
+```
+
+Calculate the beginning of the day:
+
+```scala
+```
+
+```
+```
+
 ### bebe_make_date
+
+Suppose you have the following DataFrame:
+
+```
+```
+
+Calculate the beginning of the day:
+
+```scala
+```
+
+```
+```
 
 ### bebe_make_timestamp
 
+Suppose you have the following DataFrame:
+
+```
+```
+
+Calculate the beginning of the day:
+
+```scala
+```
+
+```
+```
+
 ### bebe_nvl2
+
+Suppose you have the following DataFrame:
+
+```
+```
+
+Calculate the beginning of the day:
+
+```scala
+```
+
+```
+```
 
 ### bebe_octet_length
 
+Suppose you have the following DataFrame:
+
+```
+```
+
+Calculate the beginning of the day:
+
+```scala
+```
+
+```
+```
+
 ### bebe_stack
+
+Suppose you have the following DataFrame:
+
+```
+```
+
+Calculate the beginning of the day:
+
+```scala
+```
+
+```
+```
 
 ### bebe_parse_url
 
+Suppose you have the following DataFrame:
+
+```
+```
+
+Calculate the beginning of the day:
+
+```scala
+```
+
+```
+```
+
 ### bebe_percentile
+
+Suppose you have the following DataFrame:
+
+```
+```
+
+Calculate the beginning of the day:
+
+```scala
+```
+
+```
+```
 
 ### bebe_regexp_extract_all
 
@@ -185,16 +509,93 @@ df
 
 ### bebe_right
 
+Suppose you have the following DataFrame:
+
+```
+```
+
+Calculate the beginning of the day:
+
+```scala
+```
+
+```
+```
+
 ### bebe_sentences
+
+Suppose you have the following DataFrame:
+
+```
+```
+
+Calculate the beginning of the day:
+
+```scala
+```
+
+```
+```
 
 ### bebe_space
 
+Suppose you have the following DataFrame:
+
+```
+```
+
+Calculate the beginning of the day:
+
+```scala
+```
+
+```
+```
+
 ### bebe_substr
+
+Suppose you have the following DataFrame:
+
+```
+```
+
+Calculate the beginning of the day:
+
+```scala
+```
+
+```
+```
 
 ### bebe_uuid
 
+Suppose you have the following DataFrame:
+
+```
+```
+
+Calculate the beginning of the day:
+
+```scala
+```
+
+```
+```
+
 ### bebe_weekday
 
+Suppose you have the following DataFrame:
+
+```
+```
+
+Calculate the beginning of the day:
+
+```scala
+```
+
+```
+```
 
 ## Code design
 
