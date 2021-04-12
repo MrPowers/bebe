@@ -110,6 +110,48 @@ class BebeFunctionsSpec
     }
   }
 
+  describe("endOfDay") {
+    it("returns the end of the day") {
+      val df = Seq(
+        (Timestamp.valueOf("2020-01-15 08:01:32"), Timestamp.valueOf("2020-01-15 23:59:59.999999")),
+        (Timestamp.valueOf("2020-01-20 23:03:22"), Timestamp.valueOf("2020-01-20 23:59:59.999999")),
+        (null, null)
+      ).toDF("some_time", "expected")
+      df.select("some_time").show()
+      val resDF = df
+        .withColumn("actual", endOfDay(col("some_time")))
+      resDF.select("some_time", "actual").show()
+      assertColumnEquality(resDF, "actual", "expected")
+    }
+
+    // TODO: I can add a timezone version of this test once I understand this:
+    // https://github.com/MrPowers/bebe/blob/91a5832566ec7f6ca727dd6c4562fc116dddb24f/src/test/scala/org/apache/spark/sql/BebeFunctionsSpec.scala#L71-L78
+  }
+
+  describe("endOfMonth") {
+    it("gets the end of the month of a date column") {
+      val df = Seq(
+        (Date.valueOf("2020-01-15"), Date.valueOf("2020-01-31")),
+        (Date.valueOf("2018-02-02"), Date.valueOf("2018-02-28")),
+        (null, null)
+      ).toDF("some_date", "expected")
+      df.select("some_date").show()
+      val resDF = df.withColumn("actual", endOfMonth(col("some_date")))
+      resDF.select("some_date", "actual").show()
+      assertColumnEquality(resDF, "actual", "expected")
+    }
+
+    it("gets the end of the month of a timestamp column") {
+      val df = Seq(
+        (Timestamp.valueOf("2020-01-15 08:01:32"), Date.valueOf("2020-01-31")),
+        (Timestamp.valueOf("2020-02-02 23:03:22"), Date.valueOf("2020-02-29")),
+        (null, null)
+      ).toDF("some_time", "expected")
+        .withColumn("actual", endOfMonth(col("some_time")))
+      assertColumnEquality(df, "actual", "expected")
+    }
+  }
+
   // MISSING SPARK FUNCTIONS
 
   describe("bebe_approx_percentile") {
