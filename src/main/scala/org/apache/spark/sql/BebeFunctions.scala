@@ -39,6 +39,12 @@ object BebeFunctions {
       BeginningOfMonth(col.expr)
     }
 
+  def endOfDay(col: Column): Column =
+    endOfDay(col, None)
+
+  def endOfDay(col: Column, timeZoneId: String): Column =
+    endOfDay(col, Some(timeZoneId))
+
   def endOfDay(col: Column, timeZoneId: Option[String] = None): Column =
     withExpr {
       val startOfNextDay =
