@@ -110,6 +110,83 @@ class BebeFunctionsSpec
     }
   }
 
+  describe("endOfDay") {
+    it("returns the end of the day") {
+      val df = Seq(
+        (Timestamp.valueOf("2020-01-15 08:01:32"), Timestamp.valueOf("2020-01-15 23:59:59")),
+        (Timestamp.valueOf("2020-01-20 23:03:22"), Timestamp.valueOf("2020-01-20 23:59:59")),
+        (null, null)
+      ).toDF("some_time", "expected")
+      df.select("some_time").show()
+      val resDF = df
+        .withColumn("actual", endOfDay(col("some_time")))
+      resDF.select("some_time", "actual").show()
+      assertColumnEquality(resDF, "actual", "expected")
+    }
+
+    it("handles Dates correctly") {
+      val df = Seq(
+        (Date.valueOf("2020-01-15"), Timestamp.valueOf("2020-01-15 23:59:59"))
+      ).toDF("some_time", "expected")
+      df.select("some_time").show()
+      val resDF = df
+        .withColumn("actual", endOfDay(col("some_time")))
+      resDF.select("some_time", "actual").show()
+      assertColumnEquality(resDF, "actual", "expected")
+    }
+
+    it("returns the end of the day in a specific timezone") {
+      println("timezone")
+      val testTimezone         = "America/Bahia"
+      val defaultTimezone      = TimeZone.getDefault()
+      val sparkDefaultTimezone = spark.conf.get("spark.sql.session.timeZone")
+      println(defaultTimezone.getDisplayName())
+      println(sparkDefaultTimezone)
+      TimeZone.setDefault(TimeZone.getTimeZone(testTimezone))
+      spark.conf.set("spark.sql.session.timeZone", testTimezone)
+      val df = Seq(
+        (
+          valueOf("2020-01-15 08:01:32", testTimezone),
+          valueOf("2020-01-15 23:59:59", testTimezone)
+        ),
+        (
+          valueOf("2020-01-20 23:03:22", testTimezone),
+          valueOf("2020-01-20 23:59:59", testTimezone)
+        ),
+        (null, null)
+      ).toDF("some_time", "expected")
+        .withColumn("actual", endOfDay(col("some_time"), Some(testTimezone)))
+      assertColumnEquality(df, "actual", "expected")
+
+      TimeZone.setDefault(defaultTimezone)
+      spark.conf.set("spark.sql.session.timeZone", sparkDefaultTimezone)
+    }
+  }
+
+  describe("endOfMonth") {
+    it("gets the end of the month of a date column") {
+      val df = Seq(
+        (Date.valueOf("2020-01-15"), Date.valueOf("2020-01-31")),
+        (Date.valueOf("2018-02-02"), Date.valueOf("2018-02-28")),
+        (null, null)
+      ).toDF("some_date", "expected")
+      df.select("some_date").show()
+      val resDF = df.withColumn("actual", endOfMonth(col("some_date")))
+      resDF.select("some_date", "actual").show()
+      assertColumnEquality(resDF, "actual", "expected")
+    }
+
+    it("gets the end of the month of a timestamp column") {
+      val df = Seq(
+        (Timestamp.valueOf("2020-01-15 08:01:32"), Date.valueOf("2020-01-31")),
+        (Timestamp.valueOf("2020-02-02 23:03:22"), Date.valueOf("2020-02-29")),
+        (null, null)
+      ).toDF("some_time", "expected")
+        .withColumn("actual", endOfMonth(col("some_time")))
+      assertColumnEquality(df, "actual", "expected")
+    }
+  }
+
   // MISSING SPARK FUNCTIONS
 
   describe("bebe_approx_percentile") {

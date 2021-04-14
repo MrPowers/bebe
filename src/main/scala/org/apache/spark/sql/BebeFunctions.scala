@@ -4,7 +4,7 @@ import org.apache.spark.sql.catalyst.expressions._
 import org.apache.spark.sql.catalyst.expressions.aggregate._
 import org.apache.spark.sql.types.StringType
 import org.apache.spark.unsafe.types.UTF8String
-import org.apache.spark.sql.functions.{lit, when}
+import org.apache.spark.sql.functions.{expr, lit, when}
 
 /**
   * @groupname string_funcs String Functions
@@ -37,6 +37,26 @@ object BebeFunctions {
   def beginningOfMonth(col: Column): Column =
     withExpr {
       BeginningOfMonth(col.expr)
+    }
+
+  def endOfDay(col: Column): Column =
+    endOfDay(col, None)
+
+  def endOfDay(col: Column, timeZoneId: String): Column =
+    endOfDay(col, Some(timeZoneId))
+
+  def endOfDay(col: Column, timeZoneId: Option[String] = None): Column =
+    withExpr {
+      val startOfNextDay =
+        TruncTimestamp(lit("day").expr, DateAdd(col.expr, lit(1).expr), timeZoneId)
+      // 1 second before end-of-day to match Rails: https://apidock.com/rails/DateTime/end_of_day
+      TimeAdd(startOfNextDay, expr("interval -1 second").expr, timeZoneId)
+    }
+
+  def endOfMonth(col: Column): Column =
+    withExpr {
+      val startOfNextMonth = TruncTimestamp(lit("month").expr, AddMonths(col.expr, lit(1).expr))
+      DateAdd(startOfNextMonth, lit(-1).expr)
     }
 
   // FUNCTIONS MISSING IN SCALA API
