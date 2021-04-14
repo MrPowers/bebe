@@ -43,14 +43,11 @@ object BebeFunctions {
     withExpr {
       val startOfNextDay =
         TruncTimestamp(lit("day").expr, DateAdd(col.expr, lit(1).expr), timeZoneId)
-      // TODO: Is this definition of end of day common? Maybe we shouldn't have an
-      // endOfDay method at all.
-      TimeAdd(startOfNextDay, expr("interval -1 microsecond").expr, timeZoneId)
+      // 1 second before end-of-day to match Rails: https://apidock.com/rails/DateTime/end_of_day
+      TimeAdd(startOfNextDay, expr("interval -1 second").expr, timeZoneId)
     }
 
   def endOfMonth(col: Column): Column =
-    // TODO: I didn't follow why we need BeginningOfMonth, so I didn't add an EndOfMonth
-    // expression.
     withExpr {
       val startOfNextMonth = TruncTimestamp(lit("month").expr, AddMonths(col.expr, lit(1).expr))
       DateAdd(startOfNextMonth, lit(-1).expr)
