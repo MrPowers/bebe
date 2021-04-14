@@ -14,7 +14,7 @@ This library makes it easier to write Spark code:
 Fetch the JAR from Maven:
 
 ```scala
-libraryDependencies += "com.github.mrpowers" %% "bebe" % "0.0.2"
+libraryDependencies += "com.github.mrpowers" %% "bebe" % "0.1.0"
 ```
 
 bebe depends on Spark internals, so you need to be careful to select the right version.
@@ -23,6 +23,8 @@ bebe depends on Spark internals, so you need to be careful to select the right v
 |-------|-------|-------|
 | 3.1.1 | 2.12  | 0.1.0 |
 | 3.0.1 | 2.12  | 0.0.2 |
+
+You can find all the published bebe versions [here](https://repo1.maven.org/maven2/com/github/mrpowers/).
 
 ## Why bebe?
 
